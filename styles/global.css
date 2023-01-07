@@ -1,0 +1,10 @@
+.gallery--paragraph--copyright {
+    color: #b0b0b0;
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.gallery--paragraph--copyright:before {
+    content: "Source: ";
+}
