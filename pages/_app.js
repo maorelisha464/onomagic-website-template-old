@@ -17,7 +17,6 @@ export default function App(props) {
         <script>
           var googletag = googletag || Object();
           googletag.cmd = googletag.cmd || [];
-          console.log(googletag);
         </script>
       </Head>
 

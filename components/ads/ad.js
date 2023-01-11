@@ -59,7 +59,7 @@ const ads = {
     }
 }
 
-function Ad({ adId, sizes }) {
+function Ad({ adId, width, height }) {
     // const { isTransitioning } = useTransitionState();
     const ad = ads[adId];
     const adIdDiv = `div-gpt-ad-ono_${adId}`
@@ -73,7 +73,7 @@ function Ad({ adId, sizes }) {
 
 
     return (
-        <AdWrapper width={sizes && sizes.width || null} height={sizes && sizes.height || null}>
+        <AdWrapper width={width || null} height={height || null}>
             <AdWrapperTitle>
                 <span>ADVERTISEMENT</span>
             </AdWrapperTitle>

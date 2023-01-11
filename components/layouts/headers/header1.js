@@ -8,7 +8,7 @@ width: 100%;
     background: linear-gradient(90deg, rgba(168,223,235,1) 0%, rgba(109,183,210,1) 44%, rgba(159,207,217,1) 100%);
 font-size:50px;
 padding-left: 200px;
-position: sticky;
+position: ${props => props.sticky ? 'sticky' : 'unset'};
 top: 0;
 z-index: 9999;
 `
@@ -25,11 +25,13 @@ font-size: 45px;
 `
 
 export default function Header1({ }) {
+    const sites = ['PupABC', 'We Live Luxury', 'OnoMagic Template']
+    const index = 0
     return (
         <>
-            <HeaderWrapper>
+            <HeaderWrapper sticky={true}>
                 <HeaderTitle>
-                    We Live Luxury
+                    {sites[index]}
                 </HeaderTitle>
             </HeaderWrapper>
         </>
