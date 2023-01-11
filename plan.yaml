@@ -1,0 +1,75 @@
+config: 1 DAY
+    later:
+        config logic + tests logic
+    config structure
+
+Advertising - based on config (position + ads config): 3-4 DAYS
+    later:
+        connect adUnits with tests
+    setup prebid - prebid config, prebid auction, targeting
+    setup amazon - amazon config, amazon auction, targeting
+    setup gpt - initials, defineSlots, setTargeting
+    events - slotRenderEnded + viewability
+    newSlots
+    refresh slots
+    clearSlots
+
+Tracking:  3-4 DAYS (YANIV)
+    reload
+    multiPlatformTrack:
+        pageValue
+        pageVideoValue
+        pageView
+    noUtm
+    viewability ? (compass)
+
+
+layouts: 5-7 DAYS
+    header
+    footer
+    homepage 
+    regular articles
+    regular pages - (about us, terms of use, etc.)
+    campaigns articles layout - (feed layout + gallery layout) - 2 DAYS
+
+env:  
+    new ec2 instance
+    env file
+
+sessionParams:  ON-DEV
+    session
+    userValue - (calculate value + estimatedValue)
+    country
+    device
+
+components: 4 DAYS
+    CMP
+    bidCacher
+    ImageLoader ? ask Yaniv
+    video
+    storage:
+        sessionStorage
+        cookies
+    
+prebid-file: 2 DAYS
+    build prebid file on each build
+
+
+
+
+
+Zvika req:
+    Layouts:
+        -Gallery layout
+        -Switching layouts based on utm or other
+    A/B testing tool:
+    Dashboards:
+        Admin panel – to manage demand, bid adjustments, automation mapping to accounts and so on.
+        Improve the existing reports capabilities
+        CMS - Content uploading and management (migration and duplication of articles and items, indexing options)
+    Alert system (GAM down, Site performance, FB API errors, adunits/bidders issues…):
+    Improve automation:
+    Channel expansion:
+    Sites expansion & management:
+    Intent IQ integration:
+    Facilitate Search Arbitrage activity:
