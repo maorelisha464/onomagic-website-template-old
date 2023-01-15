@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Footer1 from "./footers/footer1";
 import Header1 from "./headers/header1";
 import Head from 'next/head'
 import { Grid, Progress } from '@mantine/core';
 import Ad from "../ads/ad";
-
+import userParams from '../common/userParams'
 
 
 const SideElement = styled.div`

@@ -15,6 +15,7 @@
 
 import { createGetInitialProps } from '@mantine/next';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
+import Advertising from '../components/ads/advertising'
 
 const getInitialProps = createGetInitialProps();
 
@@ -24,7 +25,9 @@ export default class _Document extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <Advertising />
+        </Head>
         <body>
           <Main />
           <NextScript />
