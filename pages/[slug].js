@@ -5,7 +5,7 @@ import SlugLayout from '../components/layouts/slugLayout'
 
 const Post = ({ data }) => {
     const router = useRouter();
-    const { slug, utm_source, page } = router.query
+    const { slug, utm_source, page } = router.query;
     const onePageChannels = ['facebook', 'twitter', 'tiktok']
     const content = onePageChannels.includes(utm_source) ? OnePage : Gallery;
     const contentProps = { data, pageNumber: page || 0 }

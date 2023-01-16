@@ -4,11 +4,11 @@ import userParams from '../common/userParams';
 import { withGPTQueue, withPrebidQueue } from './adsQueue'
 
 export default function Advertising({ }) {
-    const { utm_campaign, utm_source } = userParams();
+    const { isReady, utm_campaign, utm_source } = userParams();
     const gptInit = () => {
         const pubads = window.googletag.pubads();
-        pubads.setTargeting('utm_campaign', utm_campaign);
-        pubads.setTargeting('utm_source', utm_source);
+        utm_campaign && pubads.setTargeting('utm_campaign', utm_campaign);
+        utm_source && pubads.setTargeting('utm_source', utm_source);
         pubads.disableInitialLoad();
         pubads.enableSingleRequest();
         // pubads.addEventListener('slotRenderEnded', data => {
@@ -121,10 +121,11 @@ export default function Advertising({ }) {
     }
 
     useEffect(() => {
+        if (!isReady) return;
         initAdsLibs();
         withGPTQueue(gptInit);
         withPrebidQueue(prebidInit)
-    }, [])
+    }, [isReady])
 
     return (
         <>

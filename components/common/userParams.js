@@ -1,11 +1,16 @@
 import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react';
 
-export default function userParams() {
+export default function useUserParams() {
+    // const router = useRouter();
     const router = useRouter();
-    const utm_source = router.query.utm_source;
-    const utm_campaign = router.query.utm_campaign;
-    return {
-        utm_source,
-        utm_campaign
-    }
+    const {
+        isReady,
+        query: {
+            utm_campaign,
+            utm_source
+        }
+    } = router;
+    console.log('isReady', isReady);
+    return { isReady, utm_campaign, utm_source };
 }
