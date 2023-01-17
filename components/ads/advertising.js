@@ -2,113 +2,50 @@ import Script from 'next/script';
 import React, { useEffect } from 'react';
 import userParams from '../common/userParams';
 import { withGPTQueue, withPrebidQueue } from './adsQueue'
+import { bidAdjustments, buildPrebidConfig, prebidEventsListeners, gptEventsListeners } from './advertisingHelpers';
 
 export default function Advertising({ }) {
     const { isReady, utm_campaign, utm_source } = userParams();
+    let initFinished = false;
     const gptInit = () => {
         const pubads = window.googletag.pubads();
         utm_campaign && pubads.setTargeting('utm_campaign', utm_campaign);
         utm_source && pubads.setTargeting('utm_source', utm_source);
         pubads.disableInitialLoad();
         pubads.enableSingleRequest();
-        // pubads.addEventListener('slotRenderEnded', data => {
-        //     const slotId = data && data.slot && data.slot.getSlotElementId();
-        //     try {
-
-        //         if (!slotId) throw new Error('No slot id in data');
-        //         if (!data.slot.adParams) throw new Error(`No adParams in slot '${slotId}'`);
-
-        //         const { page, loop, amazonBids, prebidBids } = data.slot.adParams;
-        //         sreLog('adParams', data.slot.adParams);
-
-        //         if (slotId !== 'div-gpt-sticky') {
-        //             this.pageRenderedTimeStamp[page || 0] = new Date().getTime();
-        //         }
-
-        //         const maxBid = getMaxBid({ amazonBids, prebidBids });
-        //         sreLog('maxBid', maxBid);
-
-        //         let adxWinner = false;
-        //         let winningBidCpm = maxBid ? maxBid.cpm : 0;
-        //         sreLog('winningBidCpm', winningBidCpm);
-
-        //         const html = data.slot.getHtml();
-
-        //         if (data.isEmpty) {
-        //             // No DFP creative
-        //             sreLog('No DFP creative', maxBid || 'No winning bid', 'Set winningBidCpm = 0');
-        //             winningBidCpm = 0;
-        //         } else if (/pbjs\.renderAd/.test(html)) {
-        //             // Prebid
-        //             sreLog('winner', 'Prebid', { html });
-        //         } else if (/apstag\.renderImp/.test(html)) {
-        //             // Amazon
-        //             sreLog('winner', 'Amazon', { html });
-        //         } else {
-        //             // AdX
-        //             sreLog('winner', 'Adx');
-        //             adxWinner = true;
-        //         }
-
-        //         if (this.isUtm) {
-        //             tracking.trackCustomPageValue({
-        //                 dfpAdUnitCode: data.slot.dfpAdUnitCode,
-        //                 page,
-        //                 loop,
-        //                 winningBidCpm,
-        //                 adxWinner,
-        //             });
-
-        //             if (adxWinner || winningBidCpm > 0) {
-        //                 tracking.trackDebugPageValue(maxBid, {
-        //                     dfpAdUnitCode: data.slot.dfpAdUnitCode,
-        //                     winningBidCpm,
-        //                     adxWinner,
-        //                     page,
-        //                     slotId,
-        //                 });
-        //             }
-        //         }
-
-        //         // unlock cached bid if it was not rendered
-        //         if (window.gallery.pbc) {
-        //             const slotTargeting = data.slot.getTargetingMap();
-        //             if (data.slot.prebidCode && slotTargeting) {
-        //                 const prebidAdId = slotTargeting.hb_adid && slotTargeting.hb_adid[0];
-        //                 const bidResponses = window.pbjs.getBidResponsesForAdUnitCode(data.slot.prebidCode).bids || [];
-        //                 const slotBid = bidResponses.find(b => b.adId === prebidAdId);
-        //                 if (slotBid && slotBid.status !== 'rendered') {
-        //                     sreLog('Unlock cached bid', slotBid);
-        //                     slotBid.locked = false;
-        //                 }
-        //             }
-        //         }
-
-        //         const ono_clk = window.googletag.pubads().getTargeting('ono_clk');
-
-        //         if (!ono_clk.length) {
-        //             const queryString = `div[id='${slotId}'] iframe[id^='google_ads_iframe_']`;
-        //             const frame = document.querySelector(queryString);
-
-        //             if (!!frame) {
-        //                 const innerDocument = frame.contentDocument || frame.contentWindow.document;
-        //                 const frameId = frame.id;
-        //                 const isDblClickDetected = innerDocument.querySelector('#confirmedClickVisible');
-
-        //                 if (!!isDblClickDetected) {
-        //                     window.ga('send', 'event', 'cfclk', frameId);
-        //                     Advertising[queueForGPT](() => window.googletag.pubads().setTargeting('ono_clk', '1'));
-        //                 }
-        //             }
-        //         }
-        //     } catch (err) {
-        //         sreLog('error', err);
-        //     }
-        // });
+        gptEventsListeners(pubads);
         window.googletag.enableServices();
     }
 
-    const initAdsLibs = () => {
+    const prebidInit = () => {
+        const pbjs = window.pbjs;
+        const bidAdjustmentsMap = {
+            underdogmedia: 0.77,
+            noBid: 0.94,
+            sharethrough: 0.87,
+            triplelift: 0.96,
+            pubmaticnew: 0.97,
+            onoapn: 0.95,
+            yahoossp: 0.91,
+            onetag: 0.95,
+            openx: 0.96,
+            rubicon: 0.95,
+            sovrn: 0.96,
+            yieldmo: 0.96,
+            amx: 0.93,
+            ix: 0.92,
+            rhythmone: 0.97,
+            '33across': 0.98
+        };
+        const configProps = {};
+        const config = buildPrebidConfig(configProps)
+        const bidderSettings = bidAdjustments(bidAdjustmentsMap);
+        pbjs.setConfig(config);
+        pbjs.bidderSettings = bidderSettings;
+        prebidEventsListeners(pbjs);
+    }
+
+    const initAdsVars = () => {
         if (typeof window === undefined) return;
         window.googletag = window.googletag || Object();
         window.googletag.cmd = window.googletag.cmd || [];
@@ -116,15 +53,12 @@ export default function Advertising({ }) {
         window.pbjs.que = window.pbjs.que || [];
     }
 
-    const prebidInit = () => {
-
-    }
-
     useEffect(() => {
-        if (!isReady) return;
-        initAdsLibs();
+        if (!isReady || initFinished) return;
+        initAdsVars();
         withGPTQueue(gptInit);
-        withPrebidQueue(prebidInit)
+        withPrebidQueue(prebidInit);
+        initFinished = true;
     }, [isReady])
 
     return (

@@ -25,8 +25,8 @@ export default function Layout({ content, contentProps }) {
             <Grid>
                 <Grid.Col span={3}>
                     <SideElement>
-                        <Ad adId='maor' width='300' height='250'></Ad>
-                        <Ad adId='maor' width='300' height='250'></Ad>
+                        {/* <Ad adId='maor' width='300' height='250'></Ad> */}
+                        {/* <Ad adId='maor' width='300' height='250'></Ad> */}
                         <div>Article Progress:</div>
                         <Progress value={progress} label={`${progress}%`} size="xl" radius="xl" />
                     </SideElement>
@@ -36,8 +36,8 @@ export default function Layout({ content, contentProps }) {
                 </Grid.Col>
                 <Grid.Col span={3}>
                     <SideElement>
-                        <Ad adId='maor' width='300' height='250'></Ad>
-                        <Ad adId='maor' width='300' height='250'></Ad>
+                        {/* <Ad adId='maor' width='300' height='250'></Ad> */}
+                        {/* <Ad adId='maor' width='300' height='250'></Ad> */}
                     </SideElement>
                 </Grid.Col>
             </Grid>

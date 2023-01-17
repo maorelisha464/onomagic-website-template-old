@@ -73,7 +73,7 @@ function Ad({ adId, width, height }) {
 
 
     return (
-        <AdWrapper width={width || null} height={height || null}>
+        <AdWrapper width={width} height={height}>
             <AdWrapperTitle>
                 <span>ADVERTISEMENT</span>
             </AdWrapperTitle>
