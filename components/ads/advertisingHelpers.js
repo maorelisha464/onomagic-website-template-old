@@ -1,3 +1,5 @@
+
+
 export const bidAdjustments = (bidAdjustMap) => {
     return Object.entries(bidAdjustMap).reduce((prev, [key, val]) => {
         return {
@@ -10,6 +12,7 @@ export const bidAdjustments = (bidAdjustMap) => {
         }
     }, {})
 }
+
 
 export const buildPrebidConfig = (configProps) => {
     const priceGranularity = {
@@ -141,7 +144,7 @@ export const buildPrebidConfig = (configProps) => {
         enableSendAllBids: false,
         consentManagement,
         userSync,
-        sizeConfig,
+        // sizeConfig,
     }
 }
 

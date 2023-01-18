@@ -1,11 +1,11 @@
-import Script from 'next/script';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import userParams from '../common/userParams';
 import { withGPTQueue, withPrebidQueue } from './adsQueue'
 import { bidAdjustments, buildPrebidConfig, prebidEventsListeners, gptEventsListeners } from './advertisingHelpers';
 
-export default function Advertising({ }) {
+export default function useAdvertising() {
     const { isReady, utm_campaign, utm_source } = userParams();
+    const [advertising, setAdvertising] = useState({})
     let initFinished = false;
     const gptInit = () => {
         const pubads = window.googletag.pubads();
@@ -53,18 +53,33 @@ export default function Advertising({ }) {
         window.pbjs.que = window.pbjs.que || [];
     }
 
+    const auction = () => {
+        if (window == undefined) return;
+        const pbjs = window.pbjs;
+        const googletag = window.googletag;
+        pbjs.requestBids({
+            bidsBackHandler: () => {
+                withGPTQueue(function () {
+                    withPrebidQueue(function () {
+                        pbjs.setTargetingForGPTAsync();
+                        googletag.pubads().refresh();
+                    });
+                });
+            },
+            timeout: 3000
+        });
+    }
+
     useEffect(() => {
-        if (!isReady || initFinished) return;
-        initAdsVars();
-        withGPTQueue(gptInit);
-        withPrebidQueue(prebidInit);
-        initFinished = true;
+        const initAdvertising = async () => {
+            if (!isReady || initFinished) return;
+            initAdsVars();
+            await withGPTQueue(gptInit);
+            await withPrebidQueue(prebidInit);
+            initFinished = true;
+        }
+        initAdvertising();
     }, [isReady])
 
-    return (
-        <>
-            <Script src={"https://securepubads.g.doubleclick.net/tag/js/gpt.js"} strategy="beforeInteractive" async />
-            <Script src={"/onomagic-prebid7.13.0.js"} strategy="beforeInteractive" async />
-        </>
-    )
+    return { advertising, auction }
 }

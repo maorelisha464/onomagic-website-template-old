@@ -22,9 +22,9 @@ export default function Gallery({ data, pageNumber, setProgress }) {
             {/* TITLE */}
             {currIndex === 0 ? <div style={{ fontSize: '60px', fontWeight: 'bold' }} dangerouslySetInnerHTML={{ __html: data.title }} /> : null}
             {/* TITLE */}
-            <Ad adId='maor2' width='728' height='90' ></Ad>
+            <Ad adId='maor2' width='728' height='90' section='aboveContent'></Ad>
             <div style={{ fontSize: '25px' }} dangerouslySetInnerHTML={{ __html: currItem }} />
-            <Ad adId='maor' width='728' height='90' ></Ad>
+            <Ad adId='maor' width='728' height='90' section='belowContent' ></Ad>
             {
                 data.content.length > 1 ? (
                     <Grid>
