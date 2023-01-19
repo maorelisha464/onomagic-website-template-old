@@ -1,3 +1,55 @@
+tracking.trackUser + track FBClick
+initFacebookPixel fbq lib
+google analytics setup
+GPT ( + slotRenderEnded logic) + Prebid + amazon setup
+initialAdvertising
+    async [refreshBids] - run auction and refresh slots
+    
+if noUtm trackNoUtm else trackReload + trackPageview
+
+infiniteScroll logic !!!!!!!!!!!!!!!!!!!!! main.js
+
+
+advertisingContext:
+{
+    auctionsCount: 1,
+    auctions:[
+        {  
+            amazonBids:[]
+            prebidBids:[]
+            noBids:[]
+        }
+    ],
+    slotsRendered:[]
+    newSlots:[],
+}
+
+
+
+
+
+
+
+tracking:
+    trackWithImgNew:
+        //bids.pupabc.com/bug?event=reload&
+        //bids.pupabc.com/allbids?
+    trackPageValue:
+         //vv.pupabc.com/prepixel?event=PageVideoValue
+         //vv.pupabc.com/prepixel?event=PageValue
+    trackWithImg:
+        //vv.pupabc.com/prepixel?event=FBClick
+        //vv.pupabc.com/prepixel?event=PageView
+        //vv.pupabc.com/prepixel?event=noUtm&
+    trackInitSession:
+        //vv.pupabc.com/prepixel?event=SessionInit&
+
+
+
+
+
+
+
 config: 1 DAY
     later:
         config logic + tests logic
