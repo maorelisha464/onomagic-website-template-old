@@ -28,7 +28,7 @@ export function useAdSlot({ sizes, id, dfpPath, bids }) {
                         id
                     )
                     .addService(googletag.pubads());
-                // googletag.enableServices();
+                googletag.enableServices();
                 googletag.display(id);
                 setSlot(slot);
             })

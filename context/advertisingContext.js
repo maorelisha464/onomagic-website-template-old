@@ -1,13 +1,19 @@
 import { createContext, useContext, useState } from 'react';
+// import 
 
 export const AdvertisingContext = createContext();
 
 export function AdvertisingWrapper({ children }) {
-    const [adsDict, setAdsDict] = useState({
+    const [adsDict, setAdsDictState] = useState({
         allSlots: [],
         newSlots: [],
         allBids: []
     })
+
+    const setAdsDict = (args) => {
+        //add logic to save it in storage
+        setAdsDictState(args);
+    }
 
     return (
         <AdvertisingContext.Provider value={{ adsDict, setAdsDict }}>
@@ -16,6 +22,6 @@ export function AdvertisingWrapper({ children }) {
     );
 }
 
-export function useAppContext() {
+export function useAdContext() {
     return useContext(AdvertisingContext);
 }

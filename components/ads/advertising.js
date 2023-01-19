@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { useAdContext } from '../../context/advertisingContext';
 import userParams from '../common/userParams';
 import { withGPTQueue, withPrebidQueue } from './adsQueue'
 import { bidAdjustments, buildPrebidConfig, prebidEventsListeners, gptEventsListeners } from './advertisingHelpers';
 
 export default function useAdvertising() {
     const { isReady, utm_campaign, utm_source } = userParams();
-    const [advertising, setAdvertising] = useState({})
+    const { } = useAdContext();
     let initFinished = false;
+    const AMAZON_TIMEOUT = 3000;
+    const PREBID_TIMEOUT = 3000;
+
     const gptInit = () => {
         const pubads = window.googletag.pubads();
         utm_campaign && pubads.setTargeting('utm_campaign', utm_campaign);
@@ -45,6 +49,36 @@ export default function useAdvertising() {
         prebidEventsListeners(pbjs);
     }
 
+    const amazonInit = () => {
+        let apstag = window['apstag'];
+        if (!apstag) {
+            function q(c, r) {
+                apstag._Q.push([c, r])
+            }
+
+            apstag = {
+                init: function () {
+                    q("i", arguments)
+                }, fetchBids: function () {
+                    q("f", arguments)
+                }, setDisplayBids: function () {
+                }, targetingKeys: function () {
+                    return []
+                }, _Q: []
+            };
+        };
+
+        apstag.init({
+            pubID: '4ec48844-41a0-42e9-bfb2-785374cd6a0a',
+            adServer: 'googletag',
+            schain: {
+                complete: 1,
+                ver: '1.0',
+                nodes: [],
+            },
+        });
+    }
+
     const initAdsVars = () => {
         if (typeof window === undefined) return;
         window.googletag = window.googletag || Object();
@@ -53,21 +87,61 @@ export default function useAdvertising() {
         window.pbjs.que = window.pbjs.que || [];
     }
 
-    const auction = () => {
-        if (window == undefined) return;
-        const pbjs = window.pbjs;
-        const googletag = window.googletag;
-        pbjs.requestBids({
-            bidsBackHandler: () => {
-                withGPTQueue(function () {
-                    withPrebidQueue(function () {
-                        pbjs.setTargetingForGPTAsync();
-                        googletag.pubads().refresh();
-                    });
-                });
-            },
-            timeout: 3000
+    const amazonAuction = async (apstag) => {
+        const amazonSlots = [] // add slots logic
+        const amazonBids = await new Promise((resolve, reject) => {
+            if (!amazonSlots.length) {
+                resolve([]);
+                return;
+            }
+            apstag.fetchBids(
+                {
+                    slots: amazonSlots,
+                    timeout: AMAZON_TIMEOUT,
+                },
+                bids => {
+                    resolve(bids);
+                }
+            );
         });
+        return amazonBids;
+    }
+
+    const prebidAuction = async (pbjs) => {
+        const auctionResponse = {};
+        await new Promise((res, rej) => {
+            pbjs.requestBids({
+                bidsBackHandler: (bids, timedOut, auctionId) => {
+                    auctionResponse.auctionId = auctionId;
+                    auctionResponse.bids = {}
+                    const bidsEntries = Object.entries(bids);
+                    if (bidsEntries) {
+                        for (const [adUnitName, { bids }] of Object.entries(bids)) {
+                            if (bids)
+                                auctionResponse.bids[adUnitName] = bids;
+                        }
+                    }
+                    res();
+                },
+                timeout: PREBID_TIMEOUT
+            });
+        })
+        return auctionResponse;
+    }
+
+    const auction = async () => {
+        if (window == undefined) return;
+        const googletag = window.googletag;
+        const pbjs = window.pbjs;
+        const apstag = window.apstag;
+        const [amazonBids, prebidBids] = await Promise.all([amazonAuction(apstag), prebidAuction(pbjs)])
+        console.log('amazonBids:', amazonBids, 'prebidBids:', prebidBids)
+        //pass bids to google
+        await withGPTQueue(async () => {
+            apstag.setDisplayBids();
+            await withPrebidQueue(() => pbjs.setTargetingForGPTAsync())
+        });
+        googletag.pubads().refresh();
     }
 
     useEffect(() => {
@@ -76,10 +150,11 @@ export default function useAdvertising() {
             initAdsVars();
             await withGPTQueue(gptInit);
             await withPrebidQueue(prebidInit);
+            amazonInit();
             initFinished = true;
         }
         initAdvertising();
     }, [isReady])
 
-    return { advertising, auction }
+    return { auction }
 }

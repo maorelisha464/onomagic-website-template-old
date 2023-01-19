@@ -1,12 +1,18 @@
 import { useEffect } from "react"
 import Ad from "../../ads/ad"
-import { useAppContext } from '../../../context/advertisingContext'
+import { useAdContext } from '../../../context/advertisingContext'
+import useAdvertising from '../../ads/advertising'
 
 
 export default function OnePage({ data }) {
-    const { adsDict } = useAppContext();
-
-    useEffect(() => { })
+    const { adsDict } = useAdContext();
+    const { auction } = useAdvertising()
+    useEffect(() => {
+        const asyncFunc = async () => {
+            await auction();
+        }
+        asyncFunc();
+    }, [])
     return (
         <>
             {/* TITLE */}

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 // import { useTransitionState } from "@/containers/TransitionState";
 import { useAdSlot } from "./useAdSlot";
 import styled from "styled-components";
-import { useAppContext } from '../../context/advertisingContext';
+import { useAdContext } from '../../context/advertisingContext';
 
 const AdWrapperTitle = styled.div`
 &:before, &:after {
@@ -208,7 +208,7 @@ const ads = {
 }
 
 function Ad({ adId, width, height, section }) {
-    const { adsDict, setAdsDict } = useAppContext();
+    const { adsDict, setAdsDict } = useAdContext();
     const id = `ad-ono_${adId}-${section}`;
     const ad = ads[adId];
     const { slot } = useAdSlot({

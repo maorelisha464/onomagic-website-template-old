@@ -24,7 +24,7 @@ export default function Layout({ content, contentProps }) {
             </Head>
             <Header1></Header1>
             <Grid>
-                <Grid.Col span={3}>
+                <Grid.Col span={3} xs={0}>
                     <SideElement>
                         <Ad adId='maor2' width='300' height='250' section='left-sidebar-1'></Ad>
                         <Ad adId='maor2' width='300' height='250' section='left-sidebar-2'></Ad>
