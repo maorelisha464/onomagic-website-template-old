@@ -34,7 +34,11 @@ const cookies = {
     }
 }
 
-export default {
+
+
+
+
+export {
     sessionStorage,
     cookies
 };

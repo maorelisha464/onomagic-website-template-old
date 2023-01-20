@@ -2,7 +2,6 @@ import '../styles/global.css'
 import Script from 'next/script';
 import Head from 'next/head';
 import { MantineProvider } from '@mantine/core';
-import { AdvertisingWrapper } from '../context/advertisingContext';
 
 export default function App(props) {
   const { Component, pageProps } = props;
@@ -23,9 +22,7 @@ export default function App(props) {
           colorScheme: 'light',
         }}
       >
-        <AdvertisingWrapper>
-          <Component {...pageProps} />
-        </AdvertisingWrapper>
+        <Component {...pageProps} />
       </MantineProvider>
     </>
   );

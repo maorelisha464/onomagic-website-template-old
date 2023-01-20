@@ -142,7 +142,7 @@ export const buildPrebidConfig = (configProps) => {
         priceGranularity,
         bidderTimeout: 3000,
         enableSendAllBids: false,
-        consentManagement,
+        // consentManagement,
         userSync,
         // sizeConfig,
     }
@@ -188,6 +188,7 @@ export const gptEventsListeners = (pubads) => {
             // AdX
             winningBidType = 'adx';
         }
+        console.log('slotRenderEnded:', winningBidType)
     })
     // pubads.addEventListener('slotRenderEnded', data => {
     //     const slotId = data && data.slot && data.slot.getSlotElementId();

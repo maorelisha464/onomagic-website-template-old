@@ -5,6 +5,7 @@ import Header1 from "./headers/header1";
 import Head from 'next/head'
 import { Grid, Progress } from '@mantine/core';
 import Ad from "../ads/ad";
+import advertising from '../ads/advertising'
 
 
 const SideElement = styled.div`
@@ -16,7 +17,7 @@ const SideElement = styled.div`
 export default function Layout({ content, contentProps }) {
     const [progress, setProgress] = useState(0);
     const Content = content;
-
+    useEffect(advertising.runAuction, [])
     return (
         <>
             <Head>

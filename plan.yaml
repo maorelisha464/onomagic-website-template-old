@@ -1,5 +1,5 @@
 tracking.trackUser + track FBClick
-initFacebookPixel fbq lib
+# initFacebookPixel fbq lib
 google analytics setup
 GPT ( + slotRenderEnded logic) + Prebid + amazon setup
 initialAdvertising

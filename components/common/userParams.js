@@ -9,9 +9,12 @@ const uuidv4 = () => {
     });
 }
 
+const globalParams = {
+    sessionId: uuidv4()
+}
+
 export default function useUserParams() {
     const router = useRouter();
-    const sessionId = uuidv4();
     const {
         isReady,
         query: {
@@ -24,6 +27,6 @@ export default function useUserParams() {
         isReady,
         utm_campaign,
         utm_source,
-        sessionId
+        ...globalParams
     };
 }

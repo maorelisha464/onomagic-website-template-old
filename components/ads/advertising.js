@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useAdContext } from '../../context/advertisingContext';
+import { advertisingState } from '../common/store';
 import userParams from '../common/userParams';
 import { withGPTQueue, withPrebidQueue } from './adsQueue'
 import { bidAdjustments, buildPrebidConfig, prebidEventsListeners, gptEventsListeners } from './advertisingHelpers';
 
-export default function useAdvertising() {
-    const { isReady, utm_campaign, utm_source } = userParams();
-    const { } = useAdContext();
-    let initFinished = false;
-    const AMAZON_TIMEOUT = 3000;
-    const PREBID_TIMEOUT = 3000;
 
-    const gptInit = () => {
+const AMAZON_TIMEOUT = 3000;
+const PREBID_TIMEOUT = 3000;
+
+class Advertising {
+    constructor() {
+        const advertisingState = {
+            newAdUnits: [],
+            slots: [],
+            renderedSlots: [],
+            clearedSlots: [],
+            newBids: [],
+            allBids: []
+        }
+        this.advertisingState = advertisingState;
+        this.initFinished = false;
+    }
+
+    gptInit = (utm_campaign = '123', utm_source = 'facebook') => {
         const pubads = window.googletag.pubads();
         utm_campaign && pubads.setTargeting('utm_campaign', utm_campaign);
         utm_source && pubads.setTargeting('utm_source', utm_source);
@@ -21,7 +32,7 @@ export default function useAdvertising() {
         window.googletag.enableServices();
     }
 
-    const prebidInit = () => {
+    prebidInit = () => {
         const pbjs = window.pbjs;
         const bidAdjustmentsMap = {
             underdogmedia: 0.77,
@@ -49,14 +60,14 @@ export default function useAdvertising() {
         prebidEventsListeners(pbjs);
     }
 
-    const amazonInit = () => {
+    amazonInit = () => {
         let apstag = window['apstag'];
         if (!apstag) {
             function q(c, r) {
                 apstag._Q.push([c, r])
             }
 
-            apstag = {
+            window.apstag = {
                 init: function () {
                     q("i", arguments)
                 }, fetchBids: function () {
@@ -68,7 +79,7 @@ export default function useAdvertising() {
             };
         };
 
-        apstag.init({
+        window.apstag.init({
             pubID: '4ec48844-41a0-42e9-bfb2-785374cd6a0a',
             adServer: 'googletag',
             schain: {
@@ -79,7 +90,7 @@ export default function useAdvertising() {
         });
     }
 
-    const initAdsVars = () => {
+    initAdsVars = () => {
         if (typeof window === undefined) return;
         window.googletag = window.googletag || Object();
         window.googletag.cmd = window.googletag.cmd || [];
@@ -87,8 +98,27 @@ export default function useAdvertising() {
         window.pbjs.que = window.pbjs.que || [];
     }
 
-    const amazonAuction = async (apstag) => {
-        const amazonSlots = [] // add slots logic
+    defineSlot = ({ id, sizes, dfpPath }) => {
+        const googletag = window.googletag;
+        const slot = googletag
+            .defineSlot(
+                dfpPath,
+                sizes,
+                id
+            )
+            .addService(googletag.pubads());
+        googletag.enableServices();
+        googletag.display(id);
+        this.advertisingState.slots.push(slot);
+    }
+
+    amazonAuction = async (apstag) => {
+        const amazonSlots = this.advertisingState.newAdUnits.map(adUnit => ({
+            slotID: adUnit.id,
+            slotName: adUnit.dfpPath,
+            sizes: adUnit.sizes,
+        }));
+
         const amazonBids = await new Promise((resolve, reject) => {
             if (!amazonSlots.length) {
                 resolve([]);
@@ -107,16 +137,26 @@ export default function useAdvertising() {
         return amazonBids;
     }
 
-    const prebidAuction = async (pbjs) => {
+    prebidAuction = async (pbjs) => {
+        const slotsForAuction = this.advertisingState.newAdUnits.map(adUnit => ({
+            code: adUnit.id,
+            mediaTypes: {
+                banner: {
+                    sizes: adUnit.sizes
+                }
+            },
+            bids: adUnit.bids
+        }));
         const auctionResponse = {};
         await new Promise((res, rej) => {
             pbjs.requestBids({
-                bidsBackHandler: (bids, timedOut, auctionId) => {
+                adUnits: slotsForAuction,
+                bidsBackHandler: (bidsBack, timedOut, auctionId) => {
                     auctionResponse.auctionId = auctionId;
                     auctionResponse.bids = {}
-                    const bidsEntries = Object.entries(bids);
-                    if (bidsEntries) {
-                        for (const [adUnitName, { bids }] of Object.entries(bids)) {
+                    if (bidsBack) {
+                        const bidsEntries = Object.entries(bidsBack);
+                        for (const [adUnitName, { bids }] of bidsEntries) {
                             if (bids)
                                 auctionResponse.bids[adUnitName] = bids;
                         }
@@ -129,32 +169,52 @@ export default function useAdvertising() {
         return auctionResponse;
     }
 
-    const auction = async () => {
+    auction = async () => {
         if (window == undefined) return;
         const googletag = window.googletag;
         const pbjs = window.pbjs;
         const apstag = window.apstag;
-        const [amazonBids, prebidBids] = await Promise.all([amazonAuction(apstag), prebidAuction(pbjs)])
-        console.log('amazonBids:', amazonBids, 'prebidBids:', prebidBids)
+        const [amazonBids, prebidBids] = await Promise.all([this.amazonAuction(apstag), this.prebidAuction(pbjs)])
         //pass bids to google
         await withGPTQueue(async () => {
-            apstag.setDisplayBids();
-            await withPrebidQueue(() => pbjs.setTargetingForGPTAsync())
+            //define slots
+            this.advertisingState.newAdUnits.forEach(this.defineSlot);
+            if (amazonBids?.length)
+                apstag.setDisplayBids();
+            if (prebidBids)
+                await withPrebidQueue(() => pbjs.setTargetingForGPTAsync())
         });
         googletag.pubads().refresh();
+        console.log('maor', this.advertisingState);
+        console.log('************************* auction finished ***************************')
     }
 
-    useEffect(() => {
-        const initAdvertising = async () => {
-            if (!isReady || initFinished) return;
-            initAdsVars();
-            await withGPTQueue(gptInit);
-            await withPrebidQueue(prebidInit);
-            amazonInit();
-            initFinished = true;
+    runAuction = () => {
+        const asyncFunc = async () => {
+            try {
+                await this.auction();
+            } catch (e) {
+                console.log('auction failed:', e)
+            }
         }
-        initAdvertising();
-    }, [isReady])
+        asyncFunc();
+    }
 
-    return { auction }
+    initAdvertising = async () => {
+        if (this.initFinished) return;
+        this.initAdsVars();
+        await withGPTQueue(this.gptInit);
+        await withPrebidQueue(this.prebidInit);
+        this.amazonInit();
+        this.initFinished = true;
+    }
+
 }
+
+const advertising = new Advertising();
+
+(async () => {
+    await advertising.initAdvertising()
+})()
+
+export default advertising;

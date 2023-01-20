@@ -1,8 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-// import { useTransitionState } from "@/containers/TransitionState";
-import { useAdSlot } from "./useAdSlot";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { useAdContext } from '../../context/advertisingContext';
+import advertising from "./advertising";
 
 const AdWrapperTitle = styled.div`
 &:before, &:after {
@@ -208,27 +206,12 @@ const ads = {
 }
 
 function Ad({ adId, width, height, section }) {
-    const { adsDict, setAdsDict } = useAdContext();
     const id = `ad-ono_${adId}-${section}`;
-    const ad = ads[adId];
-    const { slot } = useAdSlot({
-        sizes: ad.sizes,
-        id: id,
-        dfpPath: ad.dfpPath,
-        bids: ad.bids
-    });
+    const { sizes, dfpPath, bids } = ads[adId];
 
     useEffect(() => {
-        if (slot) {
-            setAdsDict(prev => {
-                return {
-                    ...prev,
-                    newSlots: [...prev.newSlots, slot]
-                }
-            }
-            )
-        }
-    }, [slot]);
+        advertising.advertisingState.newAdUnits.push({ sizes, id, dfpPath, bids })
+    }, []);
 
     return (
         <AdWrapper width={width} height={height}>
