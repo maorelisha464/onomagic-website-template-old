@@ -1,8 +1,11 @@
 import React from 'react';
-import { advertisingState } from '../common/store';
+import { cookies } from '../common/store';
 import userParams from '../common/userParams';
 import { withGPTQueue, withPrebidQueue } from './adsQueue'
 import { bidAdjustments, buildPrebidConfig, prebidEventsListeners, gptEventsListeners } from './advertisingHelpers';
+import amazonBidsMap from './amazonBidsMap';
+
+
 
 
 const AMAZON_TIMEOUT = 3000;
@@ -19,7 +22,8 @@ class Advertising {
             renderedSlots: [],
             clearedSlots: [],
             newBids: [],
-            allBids: []
+            allBids: [],
+            totalCpm: cookies.getOno('totalCpm') || 0
         }
         this.advertisingState = advertisingState;
         this.initFinished = false;
@@ -115,8 +119,8 @@ class Advertising {
         return slot;
     }
 
-    amazonAuction = async (apstag, id) => {
-        const amazonSlotsArr = id ? this.advertisingState.selfRefreshAdUnits.filter(adUnit => adUnit.id === id) : this.advertisingState.newAdUnits
+    amazonAuction = async (apstag, unitID) => {
+        const amazonSlotsArr = unitID ? this.advertisingState.selfRefreshAdUnits.filter(adUnit => adUnit.id === unitID) : this.advertisingState.newAdUnits
         const amazonSlots = amazonSlotsArr.map(adUnit => ({
             slotID: adUnit.id,
             slotName: adUnit.dfpPath,
@@ -141,8 +145,8 @@ class Advertising {
         return amazonBids;
     }
 
-    prebidAuction = async (pbjs, id) => {
-        const slotsForAuctionArr = id ? this.advertisingState.selfRefreshAdUnits.filter(adUnit => adUnit.id === id) : this.advertisingState.newAdUnits
+    prebidAuction = async (pbjs, unitID) => {
+        const slotsForAuctionArr = unitID ? this.advertisingState.selfRefreshAdUnits.filter(adUnit => adUnit.id === unitID) : this.advertisingState.newAdUnits
         const slotsForAuction = slotsForAuctionArr.map(adUnit => ({
             code: adUnit.id,
             mediaTypes: {
@@ -174,14 +178,12 @@ class Advertising {
         return auctionResponse;
     }
 
-
-
-    destroySlots = (id) => {
+    destroySlots = (unitID) => {
         const googletag = window.googletag;
         const state = this.advertisingState;
-        if (id) {
-            const slot = state.renderedSlots.find(slot => slot.getSlotElementId() === id);
-            const rest = state.renderedSlots.filter(slot => slot.getSlotElementId() !== id);
+        if (unitID) {
+            const slot = state.renderedSlots.find(slot => slot.getSlotElementId() === unitID);
+            const rest = state.renderedSlots.filter(slot => slot.getSlotElementId() !== unitID);
             googletag.destroySlots([slot]);
             state.selfRefreshSlots = rest;
         } else {
@@ -193,12 +195,12 @@ class Advertising {
 
     }
 
-    stateAfterAuction = (slots, id) => {
+    stateAfterAuction = (slots, unitID) => {
         const state = this.advertisingState
-        if (id) {
+        if (unitID) {
             state.renderedSelfRefreshSlots = [...state.renderedSelfRefreshSlots, ...slots];
-            state.renderedSelfRefreshAdUnits = [...state.renderedSelfRefreshAdUnits, state.selfRefreshAdUnits.find(adUnit => adUnit.id === id)];
-            state.selfRefreshAdUnits = state.selfRefreshAdUnits.filter(adUnit => adUnit.id !== id);
+            state.renderedSelfRefreshAdUnits = [...state.renderedSelfRefreshAdUnits, state.selfRefreshAdUnits.find(adUnit => adUnit.id === unitID)];
+            state.selfRefreshAdUnits = state.selfRefreshAdUnits.filter(adUnit => adUnit.id !== unitID);
         } else {
             state.renderedSlots = [...state.renderedSlots, ...slots];
             state.renderedAdUnits = [...state.renderedAdUnits, ...state.newAdUnits];
@@ -206,10 +208,10 @@ class Advertising {
         }
     }
 
-    runAuction = (id) => {
+    runAuction = (unitID) => {
         const asyncFunc = async () => {
             try {
-                await this.auction(id);
+                await this.auction(unitID);
             } catch (e) {
                 console.log('auction failed:', e)
             }
@@ -226,6 +228,46 @@ class Advertising {
         this.initFinished = true;
     }
 
+    setBids = (amazonBids, prebidBids, slots) => {
+        const obj = {};
+        for (const bid of amazonBids) {
+            if (bid.amzniid && amazonBidsMap[bid.amznbid]) {
+                obj[bid.slotID] = obj[bid.slotID] || [];
+                const slotIDbids = obj[bid.slotID];
+                slotIDbids.push({
+                    bidder: 'amazon',
+                    cpm: parseFloat(amazonBidsMap[bid.amznbid])
+                })
+            }
+        }
+
+        for (const [slotID, bids] of Object.entries(prebidBids.bids)) {
+            bids.forEach(bid => {
+                obj[slotID] = obj[slotID] || [];
+                const slotIDbids = obj[slotID];
+                slotIDbids.push({
+                    bidder: 'prebid',
+                    demand: bid.bidderCode,
+                    cpm: parseFloat(bid.cpm)
+                })
+            })
+        }
+
+        const lastAuction = {
+            prebidAuctionId: prebidBids.auctionId,
+            allBids: obj
+        }
+
+        this.advertisingState.newBids.push(lastAuction)
+
+        slots.forEach(slot => {
+            const slotID = slot.getSlotElementId();
+            slot.bids = obj[slotID] || [];
+        })
+
+        console.log('maor', slots)
+    }
+
     auction = async (unitID) => {
         if (window == undefined) return;
         const checkSelfRefresh = unitID && this.advertisingState.selfRefreshAdUnits.length === 0
@@ -235,12 +277,14 @@ class Advertising {
         const pbjs = window.pbjs;
         const apstag = window.apstag;
         const [amazonBids, prebidBids] = await Promise.all([this.amazonAuction(apstag, unitID), this.prebidAuction(pbjs, unitID)])
+        console.log('auction bids:', amazonBids, prebidBids)
         //pass bids to google
         let slots;
         await withGPTQueue(async () => {
             //define slots
             const adUnit = this.advertisingState.selfRefreshAdUnits.find(adUnit => adUnit.id === unitID)
             slots = unitID ? [this.defineSlot(adUnit)] : this.advertisingState.newAdUnits.map(this.defineSlot);
+            this.setBids(amazonBids, prebidBids, slots);
             if (amazonBids?.length)
                 apstag.setDisplayBids();
             if (prebidBids)

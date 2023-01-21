@@ -10,7 +10,8 @@ const uuidv4 = () => {
 }
 
 const globalParams = {
-    sessionId: uuidv4()
+    sessionId: uuidv4(),
+
 }
 
 export default function useUserParams() {

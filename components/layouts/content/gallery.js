@@ -8,7 +8,7 @@ let firstRun = true;
 
 export default function Gallery({ data, pageNumber, setProgress }) {
     const [currItem, setCurrItem] = useState(data.content[pageNumber])
-    const [currIndex, setCurrIndex] = useState(Number(pageNumber));
+    const [currIndex, setCurrIndex] = useState(Number(pageNumber || 0));
 
     const onPaginationClick = (next) => {
         window && window.scrollTo({
@@ -16,17 +16,17 @@ export default function Gallery({ data, pageNumber, setProgress }) {
             behavior: 'smooth'
         });
         const updateIndex = next ? currIndex + 1 : currIndex - 1;
-        console.log(updateIndex)
-        setCurrIndex(updateIndex);
+        console.log(updateIndex);
         setCurrItem(data.content[updateIndex]);
+        setCurrIndex(updateIndex);
         setProgress(Math.floor((updateIndex / data.content.length) * 100));
     }
 
     useEffect(() => {
-        // if (firstRun) {
-        //     firstRun = false
-        //     return;
-        // }
+        if (firstRun) {
+            firstRun = false
+            return;
+        }
         advertising.runAuction();
     }, [currItem]);
 

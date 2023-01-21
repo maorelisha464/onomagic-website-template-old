@@ -17,6 +17,8 @@ const SideElement = styled.div`
 export default function Layout({ content, contentProps }) {
     const [progress, setProgress] = useState(0);
     const Content = content;
+
+    useEffect(advertising.runAuction, [])
     return (
         <>
             <Head>
@@ -26,8 +28,8 @@ export default function Layout({ content, contentProps }) {
             <Grid>
                 <Grid.Col span={3} xs={0}>
                     <SideElement>
-                        <Ad adId='maor2' width='300' height='250' section='left-sidebar-1' selfRefresh={30000}></Ad>
-                        <Ad adId='maor2' width='300' height='250' section='left-sidebar-2' selfRefresh={15000}></Ad>
+                        {/* <Ad adId='maor2' width='300' height='250' section='left-sidebar-1' ></Ad> */}
+                        {/* <Ad adId='maor2' width='300' height='250' section='left-sidebar-2' selfRefresh={15000}></Ad> */}
                         <div>Article Progress:</div>
                         <Progress value={progress} label={`${progress}%`} size="xl" radius="xl" />
                     </SideElement>
@@ -37,8 +39,8 @@ export default function Layout({ content, contentProps }) {
                 </Grid.Col>
                 <Grid.Col span={3}>
                     <SideElement>
-                        <Ad adId='maor2' width='300' height='250' section='right-sidebar-1' selfRefresh={5000}></Ad>
-                        <Ad adId='maor2' width='300' height='250' section='right-sidebar-2' selfRefresh={15000}></Ad>
+                        <Ad adId='maor2' width='300' height='250' section='right-sidebar-1'></Ad>
+                        {/* <Ad adId='maor2' width='300' height='250' section='right-sidebar-2' selfRefresh={15000}></Ad> */}
                     </SideElement>
                 </Grid.Col>
             </Grid>

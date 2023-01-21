@@ -1,3 +1,4 @@
+const ONO_COOKIE_KEY = '_gallery_data'
 const sessionStorage = {
     getItem: (key) => {
         const value = window?.sessionStorage?.[key]
@@ -7,6 +8,8 @@ const sessionStorage = {
         window?.sessionStorage?.setItem(key, value)
     }
 }
+
+
 
 const cookies = {
     get: (key) => {
@@ -31,6 +34,16 @@ const cookies = {
         date.setTime(date.getTime() + 30 * 60 * 1000);
         let expires = '; expires=' + date.toGMTString();
         document.cookie = key + '=' + value + expires + '; path=/';
+    },
+    setOno: (key, value) => {
+        const onoCookieObj = cookies.getOno();
+        onoCookieObj[key] = value;
+        cookies.set(ONO_COOKIE_KEY, encodeURIComponent(JSON.stringify(onoCookieObj)));
+    },
+    getOno: (key) => {
+        const onoCookie = cookies.get(ONO_COOKIE_KEY);
+        const onoCookieObj = onoCookie ? JSON.parse(decodeURIComponent(onoCookie)) : {};
+        return key ? onoCookieObj[key] : onoCookieObj;
     }
 }
 

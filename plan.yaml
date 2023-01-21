@@ -68,7 +68,7 @@ Advertising - based on config (position + ads config): 3-4 DAYS
 
 Tracking:  3-4 DAYS (YANIV)
     reload
-    multiPlatformTrack:
+    multiPlatformTrack:X
         pageValue
         pageVideoValue
         pageView
@@ -87,7 +87,7 @@ layouts: 5-7 DAYS
 env:  
     new ec2 instance
     env file
-
+xx4X4
 sessionParams:  ON-DEV
     session
     userValue - (calculate value + estimatedValue)
