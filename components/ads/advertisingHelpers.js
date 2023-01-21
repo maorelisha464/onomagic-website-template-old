@@ -13,7 +13,6 @@ export const bidAdjustments = (bidAdjustMap) => {
     }, {})
 }
 
-
 export const buildPrebidConfig = (configProps) => {
     const priceGranularity = {
         buckets: [
@@ -167,29 +166,31 @@ export const prebidEventsListeners = (pbjs) => {
     });
 }
 
+const slotRenderEnded = (data) => {
+    const slot = data?.slot
+    if (!slot) return;
+    const slotId = slot.getSlotElementId();
+    const html = slot.getHtml();
+    let winningBidType;
+    let winningBidCpm = 0;
+    if (data.isEmpty) {
+        // No DFP creative
+        winningBidType = 'nobid';
+    } else if (/pbjs\.renderAd/.test(html)) {
+        // Prebid
+        winningBidType = 'prebid';
+    } else if (/apstag\.renderImp/.test(html)) {
+        // Amazon
+        winningBidType = 'amazon';
+    } else {
+        // AdX
+        winningBidType = 'adx';
+    }
+    console.log('slotRenderEnded:', winningBidType)
+}
+
 export const gptEventsListeners = (pubads) => {
-    pubads.addEventListener('slotRenderEnded', data => {
-        const slot = data?.slot
-        if (!slot) return;
-        const slotId = slot.getSlotElementId();
-        const html = slot.getHtml();
-        let winningBidType;
-        let winningBidCpm = 0;
-        if (data.isEmpty) {
-            // No DFP creative
-            winningBidType = 'nobid';
-        } else if (/pbjs\.renderAd/.test(html)) {
-            // Prebid
-            winningBidType = 'prebid';
-        } else if (/apstag\.renderImp/.test(html)) {
-            // Amazon
-            winningBidType = 'amazon';
-        } else {
-            // AdX
-            winningBidType = 'adx';
-        }
-        console.log('slotRenderEnded:', winningBidType)
-    })
+    pubads.addEventListener('slotRenderEnded', slotRenderEnded)
     // pubads.addEventListener('slotRenderEnded', data => {
     //     const slotId = data && data.slot && data.slot.getSlotElementId();
     //     try {

@@ -1,30 +1,43 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Ad from '../../ads/ad';
+import advertising from '../../ads/advertising';
 import { Button, Grid } from '@mantine/core';
+
+
+let firstRun = true;
 
 export default function Gallery({ data, pageNumber, setProgress }) {
     const [currItem, setCurrItem] = useState(data.content[pageNumber])
     const [currIndex, setCurrIndex] = useState(Number(pageNumber));
+
     const onPaginationClick = (next) => {
         window && window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
         const updateIndex = next ? currIndex + 1 : currIndex - 1;
+        console.log(updateIndex)
         setCurrIndex(updateIndex);
         setCurrItem(data.content[updateIndex]);
-        setProgress(Math.floor((updateIndex / data.content.length) * 100))
-
+        setProgress(Math.floor((updateIndex / data.content.length) * 100));
     }
+
+    useEffect(() => {
+        // if (firstRun) {
+        //     firstRun = false
+        //     return;
+        // }
+        advertising.runAuction();
+    }, [currItem]);
 
     return (
         <>
             {/* TITLE */}
             {currIndex === 0 ? <div style={{ fontSize: '60px', fontWeight: 'bold' }} dangerouslySetInnerHTML={{ __html: data.title }} /> : null}
             {/* TITLE */}
-            <Ad adId='maor2' width='728' height='90' section='aboveContent'></Ad>
+            <Ad adId='maor' width='728' height='90' section={`aboveContent-${currIndex}`} key={`aboveContent-${currIndex}`}></Ad>
             <div style={{ fontSize: '25px' }} dangerouslySetInnerHTML={{ __html: currItem }} />
-            <Ad adId='maor' width='728' height='90' section='belowContent' ></Ad>
+            <Ad adId='maor' width='728' height='90' section={`belowContent-${currIndex}`} key={`belowContent-${currIndex}`}></Ad>
             {
                 data.content.length > 1 ? (
                     <Grid>

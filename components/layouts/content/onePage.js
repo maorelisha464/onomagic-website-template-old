@@ -9,10 +9,11 @@ export default function OnePage({ data }) {
             {/* TITLE */}
             {
                 data.content.map((item, index) => (
-                    <div key={index}>
+                    index < 10 &&
+                    (<div key={index}>
                         <div style={{ fontSize: '20px' }} dangerouslySetInnerHTML={{ __html: item }} />
                         <Ad adId='maor' width='728' height='90' section={`feed-section-${index}`}></Ad>
-                    </div>
+                    </div>)
                 ))
             }
         </>

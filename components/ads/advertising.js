@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { advertisingState } from '../common/store';
 import userParams from '../common/userParams';
 import { withGPTQueue, withPrebidQueue } from './adsQueue'
@@ -11,8 +11,11 @@ const PREBID_TIMEOUT = 3000;
 class Advertising {
     constructor() {
         const advertisingState = {
+            selfRefreshAdUnits: [],
+            renderedSelfRefreshAdUnits: [],
+            renderedSelfRefreshSlots: [],
             newAdUnits: [],
-            slots: [],
+            renderedAdUnits: [],
             renderedSlots: [],
             clearedSlots: [],
             newBids: [],
@@ -64,7 +67,7 @@ class Advertising {
         let apstag = window['apstag'];
         if (!apstag) {
             function q(c, r) {
-                apstag._Q.push([c, r])
+                window.apstag._Q.push([c, r])
             }
 
             window.apstag = {
@@ -109,11 +112,12 @@ class Advertising {
             .addService(googletag.pubads());
         googletag.enableServices();
         googletag.display(id);
-        this.advertisingState.slots.push(slot);
+        return slot;
     }
 
-    amazonAuction = async (apstag) => {
-        const amazonSlots = this.advertisingState.newAdUnits.map(adUnit => ({
+    amazonAuction = async (apstag, id) => {
+        const amazonSlotsArr = id ? this.advertisingState.selfRefreshAdUnits.filter(adUnit => adUnit.id === id) : this.advertisingState.newAdUnits
+        const amazonSlots = amazonSlotsArr.map(adUnit => ({
             slotID: adUnit.id,
             slotName: adUnit.dfpPath,
             sizes: adUnit.sizes,
@@ -137,8 +141,9 @@ class Advertising {
         return amazonBids;
     }
 
-    prebidAuction = async (pbjs) => {
-        const slotsForAuction = this.advertisingState.newAdUnits.map(adUnit => ({
+    prebidAuction = async (pbjs, id) => {
+        const slotsForAuctionArr = id ? this.advertisingState.selfRefreshAdUnits.filter(adUnit => adUnit.id === id) : this.advertisingState.newAdUnits
+        const slotsForAuction = slotsForAuctionArr.map(adUnit => ({
             code: adUnit.id,
             mediaTypes: {
                 banner: {
@@ -169,30 +174,42 @@ class Advertising {
         return auctionResponse;
     }
 
-    auction = async () => {
-        if (window == undefined) return;
+
+
+    destroySlots = (id) => {
         const googletag = window.googletag;
-        const pbjs = window.pbjs;
-        const apstag = window.apstag;
-        const [amazonBids, prebidBids] = await Promise.all([this.amazonAuction(apstag), this.prebidAuction(pbjs)])
-        //pass bids to google
-        await withGPTQueue(async () => {
-            //define slots
-            this.advertisingState.newAdUnits.forEach(this.defineSlot);
-            if (amazonBids?.length)
-                apstag.setDisplayBids();
-            if (prebidBids)
-                await withPrebidQueue(() => pbjs.setTargetingForGPTAsync())
-        });
-        googletag.pubads().refresh();
-        console.log('maor', this.advertisingState);
-        console.log('************************* auction finished ***************************')
+        const state = this.advertisingState;
+        if (id) {
+            const slot = state.renderedSlots.find(slot => slot.getSlotElementId() === id);
+            const rest = state.renderedSlots.filter(slot => slot.getSlotElementId() !== id);
+            googletag.destroySlots([slot]);
+            state.selfRefreshSlots = rest;
+        } else {
+            if (state.renderedSlots.length) {
+                googletag.destroySlots(state.renderedSlots);
+                state.renderedSlots = [];
+            }
+        }
+
     }
 
-    runAuction = () => {
+    stateAfterAuction = (slots, id) => {
+        const state = this.advertisingState
+        if (id) {
+            state.renderedSelfRefreshSlots = [...state.renderedSelfRefreshSlots, ...slots];
+            state.renderedSelfRefreshAdUnits = [...state.renderedSelfRefreshAdUnits, state.selfRefreshAdUnits.find(adUnit => adUnit.id === id)];
+            state.selfRefreshAdUnits = state.selfRefreshAdUnits.filter(adUnit => adUnit.id !== id);
+        } else {
+            state.renderedSlots = [...state.renderedSlots, ...slots];
+            state.renderedAdUnits = [...state.renderedAdUnits, ...state.newAdUnits];
+            state.newAdUnits = [];
+        }
+    }
+
+    runAuction = (id) => {
         const asyncFunc = async () => {
             try {
-                await this.auction();
+                await this.auction(id);
             } catch (e) {
                 console.log('auction failed:', e)
             }
@@ -209,6 +226,32 @@ class Advertising {
         this.initFinished = true;
     }
 
+    auction = async (id) => {
+        if (window == undefined) return;
+        const checkSelfRefresh = id && this.advertisingState.selfRefreshAdUnits.length === 0
+        const checkNewAdUnits = !id && this.advertisingState.newAdUnits.length === 0
+        if (checkSelfRefresh || checkNewAdUnits) return;
+        const googletag = window.googletag;
+        const pbjs = window.pbjs;
+        const apstag = window.apstag;
+        const [amazonBids, prebidBids] = await Promise.all([this.amazonAuction(apstag, id), this.prebidAuction(pbjs, id)])
+        //pass bids to google
+        let slots;
+        await withGPTQueue(async () => {
+            //define slots
+            const adUnit = this.advertisingState.selfRefreshAdUnits.find(adUnit => adUnit.id === id)
+            slots = id ? [this.defineSlot(adUnit)] : this.advertisingState.newAdUnits.map(this.defineSlot);
+            if (amazonBids?.length)
+                apstag.setDisplayBids();
+            if (prebidBids)
+                await withPrebidQueue(() => pbjs.setTargetingForGPTAsync())
+
+        });
+        if (slots.length)
+            googletag.pubads().refresh(slots);
+        this.stateAfterAuction(slots, id);
+        console.log('************************* auction finished ***************************')
+    }
 }
 
 const advertising = new Advertising();

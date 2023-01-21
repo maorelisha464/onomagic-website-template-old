@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import advertising from "./advertising";
 
@@ -13,21 +13,18 @@ const AdWrapperTitle = styled.div`
     width: 13%; 
   }
 
-
   text-align: center;
-    color: #999;
-    font-family: open sans;
-    font-size: 9px;
-    font-weight: 400;
-    text-transform: uppercase;
-    overflow: hidden;
-    line-height: 11px;
-    margin-bottom: 5px;
-
+  color: #999;
+  font-family: open sans;
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: uppercase;
+  overflow: hidden;
+  line-height: 11px;
+  padding: 5px 0;
 `
 const AdWrapper = styled.div`
 background: #f1f1f1;
-padding: 5px;
 margin: 30px auto;
 width: ${props => (props.width ? `${props.width}px` : '300px')};
 height: ${props => (props.height ? `${props.height}px` : '250px')};
@@ -205,12 +202,37 @@ const ads = {
     }
 }
 
-function Ad({ adId, width, height, section }) {
-    const id = `ad-ono_${adId}-${section}`;
+function Ad({ adId, width, height, section, selfRefresh }) {
+    const [selfRefreshCount, setSelfRefreshCount] = useState(0);
+    const [firstRun, setFirstRun] = useState(true);
+    const buildRefreshId = (counter) => `ad-ono_${adId}-${section}-selfrefresh${counter}`
+
+    const id = selfRefresh ? buildRefreshId(selfRefreshCount) : `ad-ono_${adId}-${section}`;
     const { sizes, dfpPath, bids } = ads[adId];
 
+    const selfRefreshLogic = () => {
+        advertising.advertisingState.selfRefreshAdUnits.push({ sizes, id, dfpPath, bids });
+        advertising.runAuction(id);
+        setTimeout(() => {
+            setSelfRefreshCount(selfRefreshCount + 1);
+        }, selfRefresh)
+    }
+
     useEffect(() => {
-        advertising.advertisingState.newAdUnits.push({ sizes, id, dfpPath, bids })
+        if (firstRun) {
+            setFirstRun(false);
+            return;
+        }
+        advertising.destroySlots(buildRefreshId(selfRefreshCount - 1));
+        selfRefreshLogic();
+    }, [selfRefreshCount])
+
+    useEffect(() => {
+        if (selfRefresh) {
+            selfRefreshLogic();
+            return;
+        }
+        advertising.advertisingState.newAdUnits.push({ sizes, id, dfpPath, bids });
     }, []);
 
     return (
