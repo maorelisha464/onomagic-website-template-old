@@ -226,21 +226,21 @@ class Advertising {
         this.initFinished = true;
     }
 
-    auction = async (id) => {
+    auction = async (unitID) => {
         if (window == undefined) return;
-        const checkSelfRefresh = id && this.advertisingState.selfRefreshAdUnits.length === 0
-        const checkNewAdUnits = !id && this.advertisingState.newAdUnits.length === 0
+        const checkSelfRefresh = unitID && this.advertisingState.selfRefreshAdUnits.length === 0
+        const checkNewAdUnits = !unitID && this.advertisingState.newAdUnits.length === 0
         if (checkSelfRefresh || checkNewAdUnits) return;
         const googletag = window.googletag;
         const pbjs = window.pbjs;
         const apstag = window.apstag;
-        const [amazonBids, prebidBids] = await Promise.all([this.amazonAuction(apstag, id), this.prebidAuction(pbjs, id)])
+        const [amazonBids, prebidBids] = await Promise.all([this.amazonAuction(apstag, unitID), this.prebidAuction(pbjs, unitID)])
         //pass bids to google
         let slots;
         await withGPTQueue(async () => {
             //define slots
-            const adUnit = this.advertisingState.selfRefreshAdUnits.find(adUnit => adUnit.id === id)
-            slots = id ? [this.defineSlot(adUnit)] : this.advertisingState.newAdUnits.map(this.defineSlot);
+            const adUnit = this.advertisingState.selfRefreshAdUnits.find(adUnit => adUnit.id === unitID)
+            slots = unitID ? [this.defineSlot(adUnit)] : this.advertisingState.newAdUnits.map(this.defineSlot);
             if (amazonBids?.length)
                 apstag.setDisplayBids();
             if (prebidBids)
@@ -249,7 +249,7 @@ class Advertising {
         });
         if (slots.length)
             googletag.pubads().refresh(slots);
-        this.stateAfterAuction(slots, id);
+        this.stateAfterAuction(slots, unitID);
         console.log('************************* auction finished ***************************')
     }
 }
