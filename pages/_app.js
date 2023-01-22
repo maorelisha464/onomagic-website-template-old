@@ -3,9 +3,9 @@ import Head from 'next/head';
 import { MantineProvider } from '@mantine/core';
 import AdsLibScripts from '../components/ads/adsLibScripts';
 
+
 export default function App(props) {
   const { Component, pageProps } = props;
-
   return (
     <>
       <Head>
@@ -25,3 +25,4 @@ export default function App(props) {
     </>
   );
 }
+

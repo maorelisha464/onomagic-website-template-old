@@ -1,6 +1,6 @@
 import React from 'react';
 import { cookies } from '../common/store';
-import userParams from '../common/userParams';
+// import { staticUserParams } from '../common/userParams';
 import { withGPTQueue, withPrebidQueue } from './adsQueue'
 import { bidAdjustments, buildPrebidConfig, prebidEventsListeners, gptEventsListeners } from './advertisingHelpers';
 import amazonBidsMap from './amazonBidsMap';
@@ -10,7 +10,6 @@ import amazonBidsMap from './amazonBidsMap';
 
 const AMAZON_TIMEOUT = 3000;
 const PREBID_TIMEOUT = 3000;
-
 class Advertising {
     constructor() {
         const advertisingState = {
@@ -29,10 +28,12 @@ class Advertising {
         this.initFinished = false;
     }
 
-    gptInit = (utm_campaign = '123', utm_source = 'facebook') => {
+    gptInit = () => {
         const pubads = window.googletag.pubads();
-        utm_campaign && pubads.setTargeting('utm_campaign', utm_campaign);
-        utm_source && pubads.setTargeting('utm_source', utm_source);
+        if (cookies.getOno('utm_campaign'))
+            pubads.setTargeting('utm_campaign', cookies.getOno('utm_campaign'));
+        if (cookies.getOno('utm_source'))
+            pubads.setTargeting('utm_source', cookies.getOno('utm_source'));
         pubads.disableInitialLoad();
         pubads.enableSingleRequest();
         gptEventsListeners(pubads);
@@ -98,7 +99,7 @@ class Advertising {
     }
 
     initAdsVars = () => {
-        if (typeof window === undefined) return;
+        if (typeof window === 'undefined') return;
         window.googletag = window.googletag || Object();
         window.googletag.cmd = window.googletag.cmd || [];
         window.pbjs = window.pbjs || Object();
@@ -265,11 +266,11 @@ class Advertising {
             slot.bids = obj[slotID] || [];
         })
 
-        console.log('maor', slots)
+        console.log('maor123', slots)
     }
 
     auction = async (unitID) => {
-        if (window == undefined) return;
+        if (typeof window == 'undefined') return;
         const checkSelfRefresh = unitID && this.advertisingState.selfRefreshAdUnits.length === 0
         const checkNewAdUnits = !unitID && this.advertisingState.newAdUnits.length === 0
         if (checkSelfRefresh || checkNewAdUnits) return;

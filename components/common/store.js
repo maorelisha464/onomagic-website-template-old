@@ -1,4 +1,5 @@
 const ONO_COOKIE_KEY = '_gallery_data'
+
 const sessionStorage = {
     getItem: (key) => {
         const value = window?.sessionStorage?.[key]
@@ -13,6 +14,7 @@ const sessionStorage = {
 
 const cookies = {
     get: (key) => {
+        if (typeof document === 'undefined') return;
         var nameEQ = key + '=';
         try {
             var ca = document.cookie.split(';');
@@ -30,6 +32,7 @@ const cookies = {
         }
     },
     set: (key, value) => {
+        if (typeof document === 'undefined') return;
         let date = new Date();
         date.setTime(date.getTime() + 30 * 60 * 1000);
         let expires = '; expires=' + date.toGMTString();

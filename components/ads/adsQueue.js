@@ -1,6 +1,6 @@
 const withGPTQueue = async (func) => {
     return new Promise((res, rej) => {
-        if (typeof window === undefined) return;
+        if (typeof window === 'undefined') return;
         window.googletag.cmd.push(() => {
             func();
             res();
@@ -10,7 +10,7 @@ const withGPTQueue = async (func) => {
 
 const withPrebidQueue = async (func) => {
     return new Promise((res, rej) => {
-        if (typeof window === undefined) return;
+        if (typeof window === 'undefined') return;
         window.pbjs.que.push(() => {
             func();
             res();
