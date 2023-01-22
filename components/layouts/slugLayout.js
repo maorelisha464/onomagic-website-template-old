@@ -5,7 +5,7 @@ import Header1 from "./headers/header1";
 import Head from 'next/head'
 import { Grid, Progress } from '@mantine/core';
 import Ad from "../ads/ad";
-import userParams from '../common/userParams'
+import advertising from '../ads/advertising'
 
 
 const SideElement = styled.div`
@@ -17,6 +17,7 @@ const SideElement = styled.div`
 export default function Layout({ content, contentProps }) {
     const [progress, setProgress] = useState(0);
     const Content = content;
+    useEffect(advertising.runAuction, [])
     return (
         <>
             <Head>
@@ -24,10 +25,10 @@ export default function Layout({ content, contentProps }) {
             </Head>
             <Header1></Header1>
             <Grid>
-                <Grid.Col span={3}>
+                <Grid.Col span={3} xs={0}>
                     <SideElement>
-                        <Ad adId='maor' width='300' height='250'></Ad>
-                        <Ad adId='maor' width='300' height='250'></Ad>
+                        {/* <Ad adId='maor2' width='300' height='250' section='left-sidebar-1' ></Ad> */}
+                        {/* <Ad adId='maor2' width='300' height='250' section='left-sidebar-2' selfRefresh={15000}></Ad> */}
                         <div>Article Progress:</div>
                         <Progress value={progress} label={`${progress}%`} size="xl" radius="xl" />
                     </SideElement>
@@ -37,8 +38,8 @@ export default function Layout({ content, contentProps }) {
                 </Grid.Col>
                 <Grid.Col span={3}>
                     <SideElement>
-                        <Ad adId='maor' width='300' height='250'></Ad>
-                        <Ad adId='maor' width='300' height='250'></Ad>
+                        <Ad adId='maor2' width='300' height='250' section='right-sidebar-1' selfRefresh={5000}></Ad>
+                        {/* <Ad adId='maor2' width='300' height='250' section='right-sidebar-2' selfRefresh={15000}></Ad> */}
                     </SideElement>
                 </Grid.Col>
             </Grid>

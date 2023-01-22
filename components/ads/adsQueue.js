@@ -1,11 +1,21 @@
-const withGPTQueue = (func) => {
-    if (typeof window === undefined) return;
-    window.googletag.cmd.push(func);
+const withGPTQueue = async (func) => {
+    return new Promise((res, rej) => {
+        if (typeof window === 'undefined') return;
+        window.googletag.cmd.push(() => {
+            func();
+            res();
+        });
+    })
 }
 
-const withPrebidQueue = (func) => {
-    if (typeof window === undefined) return;
-    window.pbjs.que.push(func);
+const withPrebidQueue = async (func) => {
+    return new Promise((res, rej) => {
+        if (typeof window === 'undefined') return;
+        window.pbjs.que.push(() => {
+            func();
+            res();
+        });
+    });
 }
 
 export {

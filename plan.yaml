@@ -1,3 +1,33 @@
+tracking.trackUser + track FBClick
+# initFacebookPixel fbq lib
+google analytics setup
+# GPT ( + slotRenderEnded logic) + Prebid + amazon setup
+# initialAdvertising
+    # async [refreshBids] - run auction and refresh slots
+    
+if noUtm trackNoUtm else trackReload + trackPageview
+
+infiniteScroll logic !!!!!!!!!!!!!!!!!!!!! main.js
+
+
+tracking:
+    trackWithImgNew:
+        //bids.pupabc.com/bug?event=reload&
+        //bids.pupabc.com/allbids?
+    trackPageValue:
+         //vv.pupabc.com/prepixel?event=PageVideoValue
+         //vv.pupabc.com/prepixel?event=PageValue
+    trackWithImg:
+        # //vv.pupabc.com/prepixel?event=FBClick
+        //vv.pupabc.com/prepixel?event=PageView
+        //vv.pupabc.com/prepixel?event=noUtm&
+    trackInitSession:
+        //vv.pupabc.com/prepixel?event=SessionInit&
+
+event, data
+
+
+
 config: 1 DAY
     later:
         config logic + tests logic
@@ -6,17 +36,17 @@ config: 1 DAY
 Advertising - based on config (position + ads config): 3-4 DAYS
     later:
         connect adUnits with tests
-    setup prebid - prebid config, prebid auction, targeting
-    setup amazon - amazon config, amazon auction, targeting
-    setup gpt - initials, defineSlots, setTargeting
-    events - slotRenderEnded + viewability
-    newSlots
-    refresh slots
+    # setup prebid - prebid config, prebid auction, targeting
+    # setup amazon - amazon config, amazon auction, targeting
+    # setup gpt - initials, defineSlots, setTargeting
+    # events - slotRenderEnded + viewability
+    # newSlots
+    # refresh slots
     clearSlots
 
 Tracking:  3-4 DAYS (YANIV)
     reload
-    multiPlatformTrack:
+    multiPlatformTrack:X
         pageValue
         pageVideoValue
         pageView
@@ -37,19 +67,19 @@ env:
     env file
 
 sessionParams:  ON-DEV
-    session
-    userValue - (calculate value + estimatedValue)
+    # session
+    # userValue - (calculate value + estimatedValue)
     country
-    device
+    # device
 
 components: 4 DAYS
     CMP
     bidCacher
     ImageLoader ? ask Yaniv
     video
-    storage:
-        sessionStorage
-        cookies
+    # storage:
+    #     sessionStorage
+    #     cookies
     
 prebid-file: 2 DAYS
     build prebid file on each build

@@ -1,7 +1,8 @@
 import '../styles/global.css'
 import Head from 'next/head';
 import { MantineProvider } from '@mantine/core';
-import Advertising from '../components/ads/advertising';
+import AdsLibScripts from '../components/ads/adsLibScripts';
+
 
 export default function App(props) {
   const { Component, pageProps } = props;
@@ -10,7 +11,7 @@ export default function App(props) {
       <Head>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
-      <Advertising />
+      <AdsLibScripts />
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
@@ -24,3 +25,4 @@ export default function App(props) {
     </>
   );
 }
+
