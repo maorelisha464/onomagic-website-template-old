@@ -1,6 +1,5 @@
 tracking.trackUser + track FBClick
 # initFacebookPixel fbq lib
-google analytics setup
 # GPT ( + slotRenderEnded logic) + Prebid + amazon setup
 # initialAdvertising
     # async [refreshBids] - run auction and refresh slots
@@ -69,20 +68,28 @@ env:
 sessionParams:  ON-DEV
     # session
     # userValue - (calculate value + estimatedValue)
-    country
+    country (cloudflare);
     # device
 
 components: 4 DAYS
-    CMP
+    # CMP
     bidCacher
+    google analytics setup
     ImageLoader ? ask Yaniv
-    video
+    # video
     # storage:
     #     sessionStorage
     #     cookies
     
-prebid-file: 2 DAYS
-    build prebid file on each build
+
+
+
+
+bugs:
+    error on prev - trying to make the same div
+    destroy slots
+    prebidEventsListeners
+
 
 
 
