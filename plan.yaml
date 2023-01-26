@@ -23,9 +23,6 @@ tracking:
     trackInitSession:
         //vv.pupabc.com/prepixel?event=SessionInit&
 
-event, data
-
-
 
 config: 1 DAY
     later:
@@ -56,11 +53,10 @@ Tracking:  3-4 DAYS (YANIV)
 layouts: 5-7 DAYS
     header
     footer
-    homepage 
-    regular articles
+    homepage + category
     regular pages - (about us, terms of use, etc.)
-    campaigns articles layout - (feed layout + gallery layout) - 2 DAYS
-
+    regular articles + campaigns articles layout - (feed layout + gallery layout) - 2 DAYS
+    404
 env:  
     new ec2 instance
     env file
@@ -87,8 +83,9 @@ components: 4 DAYS
 
 bugs:
     error on prev - trying to make the same div
-    destroy slots
-    prebidEventsListeners
+    destroy slots - not killing the slot properly
+    prebidEventsListeners ??
+    doubleClick protect - ask Yaniv
 
 
 
