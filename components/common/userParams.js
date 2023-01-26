@@ -42,8 +42,12 @@ export default function useUserParams(uaStr) {
     return {
         utm_campaign,
         utm_source,
+        country: cookies.get('CF-COUNTRY') || 'unknown',
         browser: UA.browser || 'unknown',
         device: UA.isMobile ? 'mobile' : UA.isDesktop ? 'desktop' : 'tablet',
+        isMobile: UA.isMobile,
+        isDesktop: UA.isDesktop,
+        isTablet: UA.isTablet,
         isIOS: UA.isIos,
         isBot: UA.isBot,
         os: UA.os || 'unknown',

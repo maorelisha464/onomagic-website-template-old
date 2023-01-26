@@ -142,7 +142,7 @@ export const buildPrebidConfig = (configProps) => {
         priceGranularity,
         bidderTimeout: 3000,
         enableSendAllBids: false,
-        // consentManagement,
+        consentManagement,
         userSync,
         // sizeConfig,
     }

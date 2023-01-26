@@ -179,21 +179,22 @@ class Advertising {
         return auctionResponse;
     }
 
-    destroySlots = (unitID) => {
+    destroySlots = async (unitID) => {
         const googletag = window.googletag;
         const state = this.advertisingState;
-        if (unitID) {
-            const slot = state.renderedSlots.find(slot => slot.getSlotElementId() === unitID);
-            const rest = state.renderedSlots.filter(slot => slot.getSlotElementId() !== unitID);
-            googletag.destroySlots([slot]);
-            state.selfRefreshSlots = rest;
-        } else {
-            if (state.renderedSlots.length) {
-                googletag.destroySlots(state.renderedSlots);
-                state.renderedSlots = [];
+        await withGPTQueue(() => {
+            if (unitID) {
+                const slot = state.renderedSlots.find(slot => slot.getSlotElementId() === unitID);
+                const rest = state.renderedSlots.filter(slot => slot.getSlotElementId() !== unitID);
+                googletag.destroySlots([slot]);
+                state.selfRefreshSlots = rest;
+            } else {
+                if (state.renderedSlots.length) {
+                    googletag.destroySlots(state.renderedSlots);
+                    state.renderedSlots = [];
+                }
             }
-        }
-
+        })
     }
 
     stateAfterAuction = (slots, unitID) => {
@@ -277,7 +278,7 @@ class Advertising {
         const googletag = window.googletag;
         const pbjs = window.pbjs;
         const apstag = window.apstag;
-        const [amazonBids, prebidBids] = await Promise.all([this.amazonAuction(apstag, unitID), this.prebidAuction(pbjs, unitID)])
+        const [amazonBids, prebidBids] = await Promise.all([this.amazonAuction(apstag, unitID), this.prebidAuction(pbjs, unitID)]);
         console.log('auction bids:', amazonBids, prebidBids)
         //pass bids to google
         let slots;
@@ -303,6 +304,6 @@ const advertising = new Advertising();
 
 (async () => {
     await advertising.initAdvertising()
-})()
+})();
 
 export default advertising;

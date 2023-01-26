@@ -2,6 +2,7 @@ import '../styles/global.css'
 import Head from 'next/head';
 import { MantineProvider } from '@mantine/core';
 import AdsLibScripts from '../components/ads/adsLibScripts';
+import CMP from '../components/cmp';
 
 
 export default function App(props) {
@@ -12,11 +13,19 @@ export default function App(props) {
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <AdsLibScripts />
+      <CMP />
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
         theme={{
           /** Put your mantine theme override here */
+          breakpoints: {
+            xs: 500,
+            sm: 800,
+            md: 1000,
+            lg: 1275,
+            xl: 1800,
+          },
           colorScheme: 'light',
         }}
       >
