@@ -1,4 +1,5 @@
 import { Container } from '@mantine/core';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import styled from 'styled-components';
@@ -25,7 +26,7 @@ const TermsOfService = ({ }) => {
                 <h2>Terms Of Service</h2>
                 <p>Terms of Service</p>
                 <p><strong>Terms of Service</strong></p>
-                <p>welivelux.com owns and maintains this website (“<strong>Site</strong>“). These Terms of Service (“<strong>Terms</strong>“) govern your access and use of the Site and the features available thereon, including without limitation, any informational material if and as available from time to time (“<strong>Services</strong>“). Our Privacy Notice, available at welivelux.com/privacy-policy/ (“<strong>Privacy Notice</strong>“) governs our collection, processing and transfer of any Personal Data (as such term is defined in the Privacy Notice). “<strong>You</strong>” means any adult user of the Site and/or Services.</p>
+                <p>welivelux.com owns and maintains this website (“<strong>Site</strong>“). These Terms of Service (“<strong>Terms</strong>“) govern your access and use of the Site and the features available thereon, including without limitation, any informational material if and as available from time to time (“<strong>Services</strong>“). Our Privacy Notice, available at <Link href='privacy-cookie-policy'>welivelux.com/privacy-policy </Link> (“<strong>Privacy Notice</strong>“) governs our collection, processing and transfer of any Personal Data (as such term is defined in the Privacy Notice). “<strong>You</strong>” means any adult user of the Site and/or Services.</p>
                 <p>Please read these Terms carefully. By visiting our Site, you agree to be bound by these Terms, as they may be amended from time to time. Your continued use of the Site following any update shall be deemed acceptance of any such amended or updated terms.</p>
                 <ol>
                     <li><strong>Use of Services</strong></li>
