@@ -1,3 +1,17 @@
+html,
+body {
+    height: 100%;
+}
+
+/* #__next {
+    min-height: 100%;
+} */
+
+
+a {
+    text-decoration: 'none';
+}
+
 .gallery--paragraph--copyright {
     color: #b0b0b0;
     display: block;

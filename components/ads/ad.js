@@ -29,7 +29,7 @@ margin: 30px auto;
 width: ${props => (props.width ? `${props.width}px` : '300px')};
 height: ${props => (props.height ? `${props.height}px` : '250px')};
 `
-
+let adsCounter = 0;
 
 const ads = {
     "maor": {
@@ -205,12 +205,12 @@ const ads = {
 function Ad({ adId, width, height, section, selfRefresh }) {
     const [selfRefreshCount, setSelfRefreshCount] = useState(0);
     const [firstRun, setFirstRun] = useState(true);
+    const [id, setId] = useState('');
     const buildRefreshId = (counter) => `ad-ono_${adId}-${section}-selfrefresh${counter}`
 
-    const id = selfRefresh ? buildRefreshId(selfRefreshCount) : `ad-ono_${adId}-${section}`;
     const { sizes, dfpPath, bids } = ads[adId];
 
-    const selfRefreshLogic = () => {
+    const selfRefreshLogic = (id) => {
         advertising.advertisingState.selfRefreshAdUnits.push({ sizes, id, dfpPath, bids });
         advertising.runAuction(id);
         setTimeout(() => {
@@ -224,15 +224,18 @@ function Ad({ adId, width, height, section, selfRefresh }) {
             return;
         }
         advertising.destroySlots(buildRefreshId(selfRefreshCount - 1));
-        selfRefreshLogic();
+        selfRefreshLogic(id);
     }, [selfRefreshCount])
 
     useEffect(() => {
+        const uid = selfRefresh ? buildRefreshId(selfRefreshCount) : `ad-ono_${adId}-${section}-${adsCounter++}`;
+        setId(uid);
+        console.log("Ad: ", uid);
         if (selfRefresh) {
-            selfRefreshLogic();
+            selfRefreshLogic(uid);
             return;
         }
-        advertising.advertisingState.newAdUnits.push({ sizes, id, dfpPath, bids });
+        advertising.advertisingState.newAdUnits.push({ sizes, id: uid, dfpPath, bids });
     }, []);
 
     return (

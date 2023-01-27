@@ -25,7 +25,7 @@ export default class _Document extends Document {
       <Html>
         <Head />
         <body>
-          <Main />
+          <Main style={{ height: '100%' }} />
           <NextScript />
         </body>
       </Html>
