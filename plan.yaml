@@ -51,10 +51,10 @@ Tracking:  3-4 DAYS (YANIV)
 
 
 layouts: 5-7 DAYS
-    header
-    footer
+    # header
+    # footer
     homepage + category
-    regular pages - (about us, terms of use, etc.)
+    # regular pages - (about us, terms of use, etc.)
     regular articles + campaigns articles layout - (feed layout + gallery layout) - 2 DAYS
     404
 env:  
@@ -82,11 +82,11 @@ components: 4 DAYS
 
 
 bugs:
-    error on prev - trying to make the same div
+    selfRefresh - need to fix
     destroy slots - not killing the slot properly
     prebidEventsListeners ??
     doubleClick protect - ask Yaniv
-
+    homePage - categories on Header
 
 
 

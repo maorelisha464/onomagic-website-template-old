@@ -117,6 +117,7 @@ class Advertising {
             .addService(googletag.pubads());
         googletag.enableServices();
         googletag.display(id);
+        console.log('Display: ', id)
         return slot;
     }
 
@@ -296,7 +297,8 @@ class Advertising {
         if (slots.length)
             googletag.pubads().refresh(slots);
         this.stateAfterAuction(slots, unitID);
-        console.log('************************* auction finished ***************************')
+        console.log('************************* auction finished ***************************');
+        window.firstAuctionFinished = true;
     }
 }
 
