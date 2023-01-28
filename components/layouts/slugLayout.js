@@ -27,8 +27,8 @@ export default function SlugLayout({ content, contentProps }) {
             <Grid>
                 <Grid.Col xs={0} md={0} lg={3}>
                     <SideElement>
-                        <Ad adId='maor2' width='300' height='250' section='left-sidebar-1' ></Ad>
-                        {/* <Ad adId='maor2' width='300' height='250' section='left-sidebar-2' selfRefresh={5000}></Ad> */}
+                        {/* <Ad adId='maor2' width='300' height='250' ></Ad> */}
+                        <Ad adId='maor2' width='300' height='250' selfRefresh={5000}></Ad>
                         <div>Article Progress:</div>
                         <Progress value={progress} label={`${progress}%`} size="xl" radius="xl" />
                     </SideElement>
@@ -38,8 +38,8 @@ export default function SlugLayout({ content, contentProps }) {
                 </Grid.Col>
                 <Grid.Col xs={0} md={3} lg={3}>
                     <SideElement>
-                        <Ad adId='maor2' width='300' height='250' section='right-sidebar-1' ></Ad>
-                        {/* <Ad adId='maor2' width='300' height='250' section='right-sidebar-2' selfRefresh={15000}></Ad> */}
+                        <Ad adId='maor2' width='300' height='250' ></Ad>
+                        {/* <Ad adId='maor2' width='300' height='250' selfRefresh={15000}></Ad> */}
                     </SideElement>
                 </Grid.Col>
             </Grid>

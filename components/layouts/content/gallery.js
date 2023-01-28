@@ -36,9 +36,9 @@ export default function Gallery({ data, pageNumber, setProgress }) {
             {currIndex === 0 ? <div style={{ fontSize: '60px', fontWeight: 'bold' }} dangerouslySetInnerHTML={{ __html: data.title }} /> : null}
             {/* TITLE */}
             <Video></Video>
-            <Ad adId='maor' width='728' height='90' section={`aboveContent-${currIndex}`} key={`aboveContent-${currIndex}`}></Ad>
+            <Ad adId='maor' width='728' height='90' key={`aboveContent-${currIndex}`}></Ad>
             <div style={{ fontSize: '25px' }} dangerouslySetInnerHTML={{ __html: currItem }} />
-            <Ad adId='maor' width='728' height='90' section={`belowContent-${currIndex}`} key={`belowContent-${currIndex}`}></Ad>
+            <Ad adId='maor' width='728' height='90' key={`belowContent-${currIndex}`}></Ad>
             {
                 data.content.length > 1 ? (
                     <Grid>

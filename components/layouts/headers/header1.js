@@ -62,7 +62,9 @@ export default function Header1({ categories }) {
             {
                 categories &&
                 (
-                    <CategoriesWrapper>sada</CategoriesWrapper>
+                    <CategoriesWrapper>
+                        <Link href='/test1'>sad</Link>
+                    </CategoriesWrapper>
                 )
             }
         </>
