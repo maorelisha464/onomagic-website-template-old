@@ -14,11 +14,11 @@ border-bottom: solid 1px #d4d2d2;
 position: ${props => props.sticky ? 'sticky' : 'unset'};
 top: 0;
 z-index: 9999;
-box-shadow: 0 3px 3px -4px #e5d1d1;
+box-shadow: 0 2px 14px -3px #e5d1d1;
 
 `
 
-const HeaderTitle = styled.div`
+const HeaderTitle = styled.span`
 text-decoration:none;
 font-size: 45px;
   font-weight: 900;
@@ -31,6 +31,17 @@ color: #aaa;
 font-size: 16px;
 line-height: 24px;
 margin-bottom: 15px
+`
+
+
+const CategoriesWrapper = styled.div`
+width: 100%;
+height:40px;
+border-bottom: solid 1px #d4d2d2;
+z-index:10;
+@media only screen and (max-width: 576px) {
+  display:none;
+}
 `
 
 export default function Header1({ categories }) {
@@ -46,14 +57,15 @@ export default function Header1({ categories }) {
                         </HeaderTitle>
                     </Link>
                     <HeaderSubtitle>Sharing our passion for the luxury lifestyle.</HeaderSubtitle>
-
                 </Container>
             </HeaderWrapper>
+            {
+                categories &&
+                (
+                    <CategoriesWrapper>sada</CategoriesWrapper>
+                )
+            }
         </>
     )
 }
 
-
-export async function getServerSideProps({ params, req }) {
-
-}

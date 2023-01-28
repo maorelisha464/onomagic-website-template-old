@@ -14,7 +14,7 @@ const SideElement = styled.div`
     top: 50px;
 `
 
-export default function Layout({ content, contentProps }) {
+export default function SlugLayout({ content, contentProps }) {
     const [progress, setProgress] = useState(0);
     const Content = content;
     useEffect(advertising.runAuction, [])

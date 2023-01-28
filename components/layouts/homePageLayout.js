@@ -1,9 +1,6 @@
 import styled from "styled-components";
 import React, { useState } from "react";
-import Footer1 from "./footers/footer1";
-import Header1 from "./headers/header1";
-import Head from 'next/head'
-import { Grid, Progress } from '@mantine/core';
+import { Grid } from '@mantine/core';
 import Ad from "../ads/ad";
 
 
@@ -17,10 +14,6 @@ const Post = styled.div`
 export default function Layout() {
     return (
         <>
-            <Head>
-                <title>Home Page</title>
-            </Head>
-            <Header1></Header1>
             <Grid>
                 <Grid.Col span={3}>
 
@@ -41,7 +34,6 @@ export default function Layout() {
 
                 </Grid.Col>
             </Grid>
-            <Footer1 />
         </>
     )
 }

@@ -4,12 +4,11 @@ import Link from "next/link";
 
 const FooterWrapper = styled.div`
 padding-top:20px;
-position:relative;
-bottom:0;
+margin-top: auto;
 width: 100%;
-    background: #22252a;
-    min-height: 140px;
-    text-align: center;
+background: #22252a;
+min-height: 140px;
+text-align: center;
 `
 
 const Copyright = styled.div`

@@ -3,9 +3,7 @@ tracking.trackUser + track FBClick
 # GPT ( + slotRenderEnded logic) + Prebid + amazon setup
 # initialAdvertising
     # async [refreshBids] - run auction and refresh slots
-    
 if noUtm trackNoUtm else trackReload + trackPageview
-
 infiniteScroll logic !!!!!!!!!!!!!!!!!!!!! main.js
 
 
@@ -40,15 +38,6 @@ Advertising - based on config (position + ads config): 3-4 DAYS
     # refresh slots
     clearSlots
 
-Tracking:  3-4 DAYS (YANIV)
-    reload
-    multiPlatformTrack:X
-        pageValue
-        pageVideoValue
-        pageView
-    noUtm
-    viewability ? (compass)
-
 
 layouts: 5-7 DAYS
     # header
@@ -56,7 +45,7 @@ layouts: 5-7 DAYS
     homepage + category
     # regular pages - (about us, terms of use, etc.)
     regular articles + campaigns articles layout - (feed layout + gallery layout) - 2 DAYS
-    404
+    # 404
 env:  
     new ec2 instance
     env file
@@ -68,7 +57,7 @@ sessionParams:  ON-DEV
     # device
 
 components: 4 DAYS
-    # CMP
+    CMP
     bidCacher
     google analytics setup
     ImageLoader ? ask Yaniv
