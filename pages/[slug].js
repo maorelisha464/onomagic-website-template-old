@@ -1,8 +1,11 @@
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import useUserParams from '../components/common/userParams'
 import Gallery from '../components/layouts/content/gallery'
 import OnePage from '../components/layouts/content/onePage'
+import Footer1 from '../components/layouts/footers/footer1'
+import Header1 from '../components/layouts/headers/header1'
 import SlugLayout from '../components/layouts/slugLayout'
 import tracking from '../components/tracking/tracking'
 
@@ -21,7 +24,13 @@ const Post = ({ data, uaString }) => {
 
     return (
         <>
+            <Head>
+                <meta name="robots" content="noindex,nofollow" />
+                <title>{contentProps.data.title}</title>
+            </Head>
+            <Header1></Header1>
             <SlugLayout content={content} contentProps={contentProps}></SlugLayout>
+            <Footer1 />
         </>
     )
 }

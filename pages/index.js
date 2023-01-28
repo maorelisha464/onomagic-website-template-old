@@ -5,8 +5,6 @@ import Layout from '../components/layouts/homePageLayout'
 import getServerSideProps from '../components/layouts/headers/getHeaderProps';
 
 export default function Home({ categories }) {
-  console.log(categories);
-
   return (
     <>
       <Head>

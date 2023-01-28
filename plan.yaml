@@ -36,7 +36,7 @@ Advertising - based on config (position + ads config): 3-4 DAYS
     # events - slotRenderEnded + viewability
     # newSlots
     # refresh slots
-    clearSlots
+    clearSlots - memory leak
 
 
 layouts: 5-7 DAYS
@@ -57,7 +57,7 @@ sessionParams:  ON-DEV
     # device
 
 components: 4 DAYS
-    CMP
+    CMP - ask about first page
     bidCacher
     google analytics setup
     ImageLoader ? ask Yaniv
@@ -71,10 +71,10 @@ components: 4 DAYS
 
 
 bugs:
-    selfRefresh - need to fix
+    # selfRefresh - need to fix
     destroy slots - not killing the slot properly
-    prebidEventsListeners ??
-    doubleClick protect - ask Yaniv
+    # prebidEventsListeners ??
+    # doubleClick protect - ask Yaniv
     homePage - categories on Header
 
 

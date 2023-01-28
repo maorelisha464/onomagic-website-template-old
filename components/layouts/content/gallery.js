@@ -16,7 +16,6 @@ export default function Gallery({ data, pageNumber, setProgress }) {
             behavior: 'smooth'
         });
         const updateIndex = next ? currIndex + 1 : currIndex - 1;
-        console.log(updateIndex);
         setCurrItem(data.content[updateIndex]);
         setCurrIndex(updateIndex);
         setProgress(Math.floor((updateIndex / data.content.length) * 100));

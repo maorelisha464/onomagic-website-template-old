@@ -1,4 +1,5 @@
 import { cookies } from "../common/store";
+import { withGPTQueue } from "./adsQueue";
 import advertising from "./advertising";
 
 export const bidAdjustments = (bidAdjustMap) => {
@@ -189,6 +190,26 @@ const calcEstimatedRevenue = (bidWinner, maxBid) => {
     return maxBid.cpm
 }
 
+const detectDoubleClick = (slotId) => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+    const ono_clk = window.googletag.pubads().getTargeting('ono_clk');
+    if (!ono_clk.length) {
+        const queryString = `div[id='${slotId}'] iframe[id^='google_ads_iframe_']`;
+        const frame = document.querySelector(queryString);
+
+        if (!!frame) {
+            const innerDocument = frame.contentDocument || frame.contentWindow.document;
+            const frameId = frame.id;
+            const isDblClickDetected = innerDocument.querySelector('#confirmedClickVisible');
+
+            if (!!isDblClickDetected) {
+                // window.ga('send', 'event', 'cfclk', frameId);
+                withGPTQueue(() => window.googletag.pubads().setTargeting('ono_clk', '1')).then(() => { });
+            }
+        }
+    }
+}
+
 const slotRenderEnded = (data) => {
     const slot = data?.slot
     if (!(slot && slot.bids)) return;
@@ -196,14 +217,12 @@ const slotRenderEnded = (data) => {
     const html = slot.getHtml();
     const bidWinner = getBidWinner(data, html); // [nobid, amazon, prebid, adx]
     const maxBid = slot.bids.reduce((currMaxBid, bid) => currMaxBid.cpm >= bid.cpm ? currMaxBid : bid, { cpm: 0, bidder: 'nobid' });
-    console.log('bidWinner', bidWinner);
-    console.log('maxBid', maxBid);
-    console.log(slotId, slot.bids);
     const estRevenueCpm = calcEstimatedRevenue(bidWinner, maxBid);
     if (estRevenueCpm) {
         advertising.advertisingState.totalCpm += estRevenueCpm;
         cookies.setOno('totalCpm', advertising.advertisingState.totalCpm);
     }
+    detectDoubleClick();
 }
 
 export const gptEventsListeners = (pubads) => {

@@ -98,8 +98,20 @@ class Advertising {
         });
     }
 
+    initEventsHook = () => {
+        window.addEventHook = window.addEventListener;
+        window.addEventListener = function () {
+            if (!window.listenerHook)
+                window.listenerHook = [];
+
+            window.listenerHook.push({ name: arguments[0], callback: arguments[1] });
+            window.addEventHook.apply(window, arguments);
+        };
+    }
+
     initAdsVars = () => {
         if (typeof window === 'undefined') return;
+        this.initEventsHook();
         window.googletag = window.googletag || Object();
         window.googletag.cmd = window.googletag.cmd || [];
         window.pbjs = window.pbjs || Object();
@@ -117,7 +129,6 @@ class Advertising {
             .addService(googletag.pubads());
         googletag.enableServices();
         googletag.display(id);
-        console.log('Display: ', id)
         return slot;
     }
 
@@ -280,7 +291,6 @@ class Advertising {
             slot.bids = obj[slotID] || [];
         })
 
-        console.log('maor123', slots)
     }
 
     auction = async (unitID) => {
@@ -292,7 +302,6 @@ class Advertising {
         const pbjs = window.pbjs;
         const apstag = window.apstag;
         const [amazonBids, prebidBids] = await Promise.all([this.amazonAuction(apstag, unitID), this.prebidAuction(pbjs, unitID)]);
-        console.log('auction bids:', amazonBids, prebidBids)
         //pass bids to google
         let slots;
         await withGPTQueue(async () => {
