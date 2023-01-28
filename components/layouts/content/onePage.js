@@ -12,7 +12,7 @@ export default function OnePage({ data }) {
                     index < 10 &&
                     (<div key={index}>
                         <div style={{ fontSize: '20px' }} dangerouslySetInnerHTML={{ __html: item }} />
-                        <Ad adId='maor' width='728' height='90' section={`feed-section-${index}`}></Ad>
+                        <Ad adId='maor' width='728' height='90' ></Ad>
                     </div>)
                 ))
             }

@@ -202,11 +202,11 @@ const ads = {
     }
 }
 
-function Ad({ adId, width, height, section, selfRefresh }) {
+function Ad({ adId, width, height, selfRefresh }) {
     const [selfRefreshCount, setSelfRefreshCount] = useState(0);
     const [firstRun, setFirstRun] = useState(true);
     const [id, setId] = useState('');
-    const buildRefreshId = (counter) => `ad-ono_${adId}-${section}-selfrefresh${counter}`
+    const buildRefreshId = (counter) => `ad-ono-${adId}-selfrefresh${counter}-${adsCounter++}`
 
     const { sizes, dfpPath, bids } = ads[adId];
 
@@ -223,14 +223,16 @@ function Ad({ adId, width, height, section, selfRefresh }) {
             setFirstRun(false);
             return;
         }
-        advertising.destroySlots(buildRefreshId(selfRefreshCount - 1));
-        selfRefreshLogic(id);
+        advertising.destroySlots(id);
+        const uid = buildRefreshId(selfRefreshCount);
+        setId(uid);
+        selfRefreshLogic(uid);
     }, [selfRefreshCount])
 
     useEffect(() => {
-        const uid = selfRefresh ? buildRefreshId(selfRefreshCount) : `ad-ono_${adId}-${section}-${adsCounter++}`;
+        const uid = selfRefresh ? buildRefreshId(selfRefreshCount) : `ad-ono-${adId}-${adsCounter++}`;
         setId(uid);
-        console.log("Ad: ", uid);
+        // console.log("Ad: ", uid);
         if (selfRefresh) {
             selfRefreshLogic(uid);
             return;
