@@ -232,7 +232,6 @@ function Ad({ adId, width, height, selfRefresh }) {
     useEffect(() => {
         const uid = selfRefresh ? buildRefreshId(selfRefreshCount) : `ad-ono-${adId}-${adsCounter++}`;
         setId(uid);
-        // console.log("Ad: ", uid);
         if (selfRefresh) {
             selfRefreshLogic(uid);
             return;
@@ -245,7 +244,7 @@ function Ad({ adId, width, height, selfRefresh }) {
             <AdWrapperTitle>
                 <span>ADVERTISEMENT</span>
             </AdWrapperTitle>
-            <div id={id}></div>
+            <div id={id} key={id}></div>
         </AdWrapper>
     );
 }

@@ -183,14 +183,26 @@ class Advertising {
     destroySlots = async (unitID) => {
         const googletag = window.googletag;
         const state = this.advertisingState;
+
+        const removeSlotElements = (slotId) => {
+            if (typeof document === 'undefined') return;
+            const slot = document.querySelector(`#${slotId}`);
+            if (!slot) return;
+            slot.setAttribute('data-google-query-id', '');
+            slot.innerHTML = '';
+        }
+
         await withGPTQueue(() => {
             if (unitID) {
-                const slot = state.renderedSlots.find(slot => slot.getSlotElementId() === unitID);
-                const rest = state.renderedSlots.filter(slot => slot.getSlotElementId() !== unitID);
+                const slot = state.renderedSelfRefreshSlots.find(slot => slot.getSlotElementId() === unitID);
+                const rest = state.renderedSelfRefreshSlots.filter(slot => slot.getSlotElementId() !== unitID);
                 googletag.destroySlots([slot]);
-                state.selfRefreshSlots = rest;
+                removeSlotElements(slot.getSlotElementId());
+                state.renderedSelfRefreshSlots = rest;
             } else {
                 if (state.renderedSlots.length) {
+                    const slotsIds = state.renderedSlots.map(slot => slot.getSlotElementId());
+                    slotsIds.forEach(slotId => removeSlotElements(slotId))
                     googletag.destroySlots(state.renderedSlots);
                     state.renderedSlots = [];
                 }
@@ -309,3 +321,16 @@ const advertising = new Advertising();
 })();
 
 export default advertising;
+
+
+
+/// Memory leak 
+// window.addEventHook = window.addEventListener;
+// window.addEventListener = function () {
+//     if (!window.listenerHook)
+//         window.listenerHook = [];
+
+//     window.listenerHook.push({name: arguments[0], callback: arguments[1] });
+//     window.addEventHook.apply(window,arguments);
+// };
+// https://stackoverflow.com/questions/47486358/google-dfp-in-spa-angular-vue-how-to-destroy-ad-and-all-its-references-to
