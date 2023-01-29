@@ -6,7 +6,7 @@ import advertising from '../ads/advertising'
 
 
 const SideElement = styled.div`
-    padding: 30px;
+    // padding: 30px;
     position: sticky;
     top: 50px;
 `

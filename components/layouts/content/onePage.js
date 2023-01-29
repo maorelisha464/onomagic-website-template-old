@@ -1,45 +1,56 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Ad from "../../ads/ad"
 import advertising from "../../ads/advertising"
 import { throttle } from '../../common/utils'
 
 
 const scrollThrottled = throttle((setOpenToPage, data) => {
+    console.log('throttle')
     const distanceFromTop = window.pageYOffset;
     const vpHeight = window.innerHeight;
     const docHeight = document.body.offsetHeight;
     const disToBottom = docHeight - vpHeight - distanceFromTop;
-    if (disToBottom < 500) {
+    if (disToBottom < 1200) {
         setOpenToPage(prev => { return Math.min(prev + 2, data.items_count) });
     }
-    console.log('Distance: ', disToBottom);
+    // console.log('Distance: ', disToBottom);
 }, 200)
 
 
 
-var isInViewport = function (elem) {
-    var bounding = elem.getBoundingClientRect();
-    return (
-        bounding.top >= 0 &&
-        bounding.left >= 0 &&
-        bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-};
+// var findLastInViewPort = function (elem) {
+//     var bounding = elem.getBoundingClientRect();
+//     // console.log('bounding', elem, bounding.top)
+//     const notShown = bounding.top - window.innerHeight >= 0
+//     return notShown;
+// };
 
-const scrollThrottledLastItemInView = throttle(() => {
-    const ads = document.querySelectorAll('[id*="ono-section"]');
-    // ads.forEach(ad => console.log(isInViewport(ad)))
-}, 200)
+// const scrollThrottledLastItemInView = throttle(() => {
+//     const ads = Array.from(document.querySelectorAll('[id*="ono-section"]'));
+//     const index = ads.findIndex(findLastInViewPort);
+//     console.log(index);
+// }, 500)
 
 export default function OnePage({ data }) {
     const [openToPage, setOpenToPage] = useState(10);
     const [firstRun, setFirstRun] = useState(true);
+    const eventListeners = useRef([]);
     useEffect(() => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return;
-        window.addEventListener('scroll', () => scrollThrottled(setOpenToPage, data));
-        window.addEventListener('scroll', () => scrollThrottledLastItemInView());
+        const func = () => { console.log('scroll'); scrollThrottled(setOpenToPage, data) }
+        window.addEventListener('scroll', func);
+        eventListeners.current = [...eventListeners.current, { eventName: 'scroll', func, target: window }]
     }, []);
+
+    useEffect(() => {
+        return () => {
+            console.log('eventListeners', eventListeners.current);
+            eventListeners.current.forEach(lis => {
+                console.log(lis);
+                lis['target']?.removeEventListener(lis.eventName, lis.func);
+            })
+        }
+    }, [])
 
     useEffect(() => {
         if (firstRun) {

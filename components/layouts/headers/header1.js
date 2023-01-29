@@ -63,7 +63,7 @@ export default function Header1({ categories }) {
                 categories &&
                 (
                     <CategoriesWrapper>
-                        <Link href='/test1'>sad</Link>
+                        <Link href='/test1?utm_source=facebook&utm_campaign=123'>sad</Link>
                     </CategoriesWrapper>
                 )
             }

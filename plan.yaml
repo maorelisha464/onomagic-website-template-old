@@ -1,5 +1,5 @@
 tracking.trackUser + track FBClick
-# initFacebookPixel fbq lib
+initFacebookPixel fbq lib
 # GPT ( + slotRenderEnded logic) + Prebid + amazon setup
 # initialAdvertising
     # async [refreshBids] - run auction and refresh slots
@@ -76,7 +76,7 @@ bugs:
     # prebidEventsListeners ??
     # doubleClick protect - ask Yaniv
     homePage - categories on Header
-
+    handle event listeners between pages
 
 
 
