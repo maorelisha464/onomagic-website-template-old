@@ -1,7 +1,13 @@
-import Head from 'next/head'
-import Layout from '../components/layouts/homePageLayout'
+import Head from "next/head";
+import Layout from "../components/layouts/homePageLayout";
 
-export default function Home() {
+const getPosts = (excludeCategaoryId, page) => {
+  return fetch(
+    `https://${process.env.HOST}/wp-json/wp/v2/posts?categories_exclude=${excludeCategaoryId}&page=${page}&_embed`
+  );
+};
+
+export default function Home(props) {
   return (
     <>
       <Head>
@@ -9,7 +15,48 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout></Layout>
+      <Layout {...props} />
     </>
-  )
+  );
+}
+
+export async function getServerSideProps({ params, req }) {
+  // Fetch data from external API
+  try {
+    const categoriesResponse = await fetch(
+      `https://${process.env.HOST}/wp-json/wp/v2/categories`
+    );
+    const categories = await categoriesResponse.json();
+    const categoryIdToExclude = categories.find(
+      (cat) => cat.name.toLowerCase() === "celebrity luxury"
+    ).id;
+    const postsAmount = categories.reduce((prev, curr) => {
+      if (curr.id === categoryIdToExclude) return prev;
+      prev += curr.count;
+      return prev;
+    }, 0);
+    const firstPosts = await (await getPosts(categoryIdToExclude, 1)).json();
+
+    const posts = firstPosts.map((post) => {
+      const postObj = {};
+      postObj["image"] =
+        post["_embedded"]?.["wp:featuredmedia"]?.[0]?.["source_url"] || "";
+      postObj["author"] =
+        post["_embedded"]?.["author"][0]?.["name"] || "No Author";
+      postObj["title"] = post.title?.rendered;
+      const postCat = categories.find((cat) => cat.id === post.categories[0]);
+      postObj["category"] = postCat?.name || "Uncategorized";
+      postObj["slug"] = post.slug;
+      return postObj;
+    });
+    return {
+      props: { postsAmount, posts, categories, categoryIdToExclude },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      notFound: true,
+    };
+  }
+  // Pass data to the page via props
 }

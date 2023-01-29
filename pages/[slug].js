@@ -30,20 +30,24 @@ export default Post
 
 export async function getServerSideProps({ params, req }) {
     // Fetch data from external API
-    const res = await fetch(`https://welivelux.com/wp-json/wp/v2/posts?slug=${params.slug}`)
-    const data = await res.json()
-    const html = data[0]?.content?.rendered;
-    const title = data[0]?.title?.rendered;
-    const articleId = data[0].id;
-    if (!html) {
+    try {
+        const res = await fetch(`https://${process.env.HOST}/wp-json/wp/v2/posts?slug=${params.slug}`)
+        const data = await res.json()
+        const html = data[0]?.content?.rendered;
+        const title = data[0]?.title?.rendered;
+        const articleId = data[0].id;
+        if (!html) {
+            throw new Error('No html');
+        }
+        const items = splitContent(html);
+        // Pass data to the page via props
+        return { props: { data: { articleId, title, ...items }, uaString: req.headers['user-agent'] } }
+        
+    } catch (error) {
         return {
             notFound: true,
         }
     }
-    const items = splitContent(html);
-
-    // Pass data to the page via props
-    return { props: { data: { articleId, title, ...items }, uaString: req.headers['user-agent'] } }
 }
 
 function splitContent(content) {

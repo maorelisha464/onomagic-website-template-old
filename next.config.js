@@ -1,5 +1,6 @@
+
+
 const nextConfig = {
-  // reactStrictMode: true,
   compiler: {
     styledComponents: {
       "ssr": true,
