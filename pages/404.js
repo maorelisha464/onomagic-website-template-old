@@ -79,7 +79,7 @@ export default function Custom404() {
                             page has been moved to another URL. If you think this is an error contact support.
                         </Text>
                         <Group position="center">
-                            <Button size="md"><Link href='/' style={{ color: 'white', textDecoration: 'none' }}>Take me back to home page</Link></Button>
+                            <Link href='/' style={{ color: 'white', textDecoration: 'none' }}> <Button size="md">Take me back to home page</Button></Link>
                         </Group>
                     </div>
                 </div>
