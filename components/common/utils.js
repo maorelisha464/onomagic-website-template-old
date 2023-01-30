@@ -21,3 +21,19 @@ export function throttle(cb, delay = 1000) {
         setTimeout(timeoutFunc, delay);
     }
 }
+
+
+export const changeUrl = (page) => {
+    if (typeof window === 'undefined') return;
+    let pathname = location.pathname;
+    const pathArray = pathname.split('/').filter(Boolean);
+    const curPage = pathArray.slice(-1);
+    if (+curPage > 0) pathArray.pop();
+    pathname = '/' + pathArray.join('/');
+    page = Number(page);
+    window.history.pushState(
+        '',
+        '',
+        page !== 0 ? `${pathname}/${page}/${page > 2 ? "" : location.search}` : `${pathname}/${location.search}`
+    );
+}
