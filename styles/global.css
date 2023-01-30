@@ -25,3 +25,7 @@ a {
 .gallery--paragraph--copyright:before {
     content: "Source: ";
 }
+
+iframe [id*="rubicom"] {
+    display: none;
+}
