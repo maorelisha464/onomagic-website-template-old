@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Ad from '../../ads/ad';
 import advertising from '../../ads/advertising';
 import { Button, Grid } from '@mantine/core';
@@ -10,7 +10,7 @@ export default function Gallery({ data, pageNumber, setProgress }) {
     const [currItem, setCurrItem] = useState(data.content[pageNumber])
     const [currIndex, setCurrIndex] = useState(Number(pageNumber || 0));
 
-    const onPaginationClick = (next) => {
+    const onPaginationClick = useCallback((next) => {
         window && window.scrollTo({
             top: 0,
             behavior: 'smooth'
@@ -19,7 +19,7 @@ export default function Gallery({ data, pageNumber, setProgress }) {
         setCurrItem(data.content[updateIndex]);
         setCurrIndex(updateIndex);
         setProgress(Math.floor((updateIndex / data.content.length) * 100));
-    }
+    }, [])
 
     useEffect(() => {
         if (firstRun) {
