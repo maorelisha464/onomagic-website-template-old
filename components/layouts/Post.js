@@ -2,40 +2,9 @@ import {
   Card,
   Image,
   Text,
-  Group,
-  Badge,
-  Button,
-  ActionIcon,
-  createStyles,
 } from "@mantine/core";
 import Link from "next/link";
 
-// const useStyles = createStyles((theme) => ({
-//   card: {
-//     backgroundColor:
-//       theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
-//     height: "300px",
-//   },
-
-//   section: {
-//     borderBottom: `1px solid ${
-//       theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
-//     }`,
-//     paddingLeft: theme.spacing.md,
-//     paddingRight: theme.spacing.md,
-//     paddingBottom: theme.spacing.md,
-//   },
-
-//   like: {
-//     color: theme.colors.red[6],
-//   },
-
-//   label: {
-//     textTransform: "uppercase",
-//     fontSize: theme.fontSizes.xs,
-//     fontWeight: 700,
-//   },
-// }));
 
 export default function Post({ image, title, category, author, slug }) {
   // const { classes, theme } = useStyles();
@@ -57,7 +26,7 @@ export default function Post({ image, title, category, author, slug }) {
         </Link>
       </Card.Section>
       <Card.Section mt="md">
-        <Text color={"blue"} size="sm" weight={500}>
+        <Text color={"blue"} size="sm" weight={500} m={"30px 15px 20px 15px"}>
           {category}
         </Text>
       </Card.Section>
