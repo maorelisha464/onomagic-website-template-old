@@ -1,66 +1,93 @@
-import styled from "styled-components";
 import React, { useState } from "react";
-import { Grid } from '@mantine/core';
-import Ad from "../ads/ad";
+import {
+  Grid,
+  Pagination,
+  Loader,
+  Center,
+  Container,
+  Text,
+  Paper,
+} from "@mantine/core";
 import Post from "./Post";
+import { getPostsWithCategoriesAndPagination } from "../common/fetchingData";
 
-// const Post = styled.div`
-//   width: 100%;
-//   background-color: #dcdcdc;
-//   height: 300px;
-// `;
+export default function Layout({ postsAmount, posts, category }) {
+  //postsAmount = 11
+  const [activePage, setPage] = useState(1);
+  const [currPosts, setCurrPosts] = useState(posts);
+  const [isLoading, setIsLoading] = useState(false);
+  const dividedPages = postsAmount / 10;
+  const calcPaginationPages = Number.isInteger(dividedPages)
+    ? dividedPages
+    : Math.floor(dividedPages + 1);
+  const handlePagiChange = async (page) => {
+    setPage(page);
+    window &&
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    setIsLoading(true);
+    const { posts } = await getPostsWithCategoriesAndPagination(page);
+    setCurrPosts(posts);
+    setIsLoading(false);
+  };
 
-export default function Layout({ postsAmount, posts, categories, categoryIdToExclude }) {
-  console.log(posts, "firstposts");
   return (
     <>
-
-      <Grid>
-        <Grid.Col span={3}></Grid.Col>
-        <Grid.Col span={6}>
-          <Grid m={"70px 0"}>
-            {posts.map((post, i) => (
-              <Grid.Col key={i} span={6}>
-                <Post
-                  image={post.image}
-                  title={post.title}
-                  category={post.category}
-                  author={post.author}
-                  slug={post.slug}
-                >
-                  {i}
-                </Post>
+      <div
+        style={{ backgroundColor: "#f0f0f0", flexGrow: 1 }}
+        align={"stretch"}
+      >
+        <Container>
+          <Grid justify="center" align="center">
+            {isLoading ? (
+              <Grid.Col justify="spaceBetween">
+                <Center>
+                  <Loader m={"70px"} size="xl" />
+                </Center>
               </Grid.Col>
-            ))}
-            {/* <Grid.Col span={6}>
-              <Post>Some Post</Post>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Post>Some Post</Post>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Post>Some Post</Post>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Post>Some Post</Post>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Post>Some Post</Post>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Post>Some Post</Post>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Post>Some Post</Post>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Post>Some Post</Post>
-            </Grid.Col> */}
+            ) : (
+              <>
+                <Grid.Col>
+                  <Paper
+                    style={{ width: "100%" }}
+                    shadow="md"
+                    p="md"
+                    m={"30px 0 20px 0"}
+                  >
+                    <Text fz="xl" ta="center">
+                      Latest Posts
+                    </Text>
+                  </Paper>
+                  <Grid m={"30px 0 20px 0"}>
+                    {(currPosts || []).map((post, i) => (
+                      <Grid.Col key={i} sm={6}>
+                        <Post
+                          image={post.image}
+                          title={post.title}
+                          category={post.category}
+                          author={post.author}
+                          slug={post.slug}
+                        >
+                          {i}
+                        </Post>
+                      </Grid.Col>
+                    ))}
+                  </Grid>
+                </Grid.Col>
+              </>
+            )}
           </Grid>
-        </Grid.Col>
-        <Grid.Col span={3}></Grid.Col>
-      </Grid>
-      {/* <Pagination total={Math.floor(postsAmount / 10) + 1} /> */}
+        </Container>
+        <Grid justify="center" align="center" m={"30px 0 20px 0"}>
+          <Pagination
+            page={activePage}
+            onChange={handlePagiChange}
+            total={calcPaginationPages}
+          />
+        </Grid>
+      </div>
     </>
   );
 }
