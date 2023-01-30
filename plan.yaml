@@ -78,7 +78,8 @@ bugs:
     homePage - categories on Header
     handle event listeners between pages
     exclude onomagic
-
+    verify ssr on css
+    kill ads on changing page
 
 
 
