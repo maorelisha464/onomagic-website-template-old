@@ -2,7 +2,7 @@ import Head from "next/head";
 import Layout from "../components/layouts/homePageLayout";
 import Header1 from "../components/layouts/headers/header1";
 import Footer1 from "../components/layouts/footers/footer1";
-import { getPostsWithCategoriesAndPagination } from "../components/common/fetchingData";
+import { getPostsWithCategories } from "../components/common/datafetching/dataFetcher";
 
 export default function Home(props) {
   return (
@@ -14,7 +14,7 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header1 categories={props.categories}></Header1>
-      <Layout {...props} />
+      <Layout {...props} categoryPage={false} />
       <Footer1 />
     </>
   );
@@ -22,8 +22,7 @@ export default function Home(props) {
 
 export async function getServerSideProps({ params, req }) {
   try {
-    const { postsAmount, posts, categories, categoryIdToExclude } =
-      await getPostsWithCategoriesAndPagination();
+    const { postsAmount, posts, categories, categoryId: categoryIdToExclude } = await getPostsWithCategories(false);
     return {
       props: { postsAmount, posts, categories, categoryIdToExclude },
     };
