@@ -16,7 +16,7 @@ export default function Gallery({ data, pageNumber, setProgress }) {
         const updateIndex = next ? currIndex + 1 : currIndex - 1;
         setCurrIndex(updateIndex);
         setCurrItem(data.content[updateIndex]);
-        setProgress(Math.floor((updateIndex + 1 / data.content.length) * 100));
+        setProgress(Math.floor((updateIndex / data.content.length) * 100));
         changeUrl(updateIndex);
         window && window.scrollTo({
             top: 0,
@@ -43,7 +43,7 @@ export default function Gallery({ data, pageNumber, setProgress }) {
             {/* TITLE */}
             {/* <Video></Video> */}
             <Ad adId='maor' width='728' height='90' key={`aboveContent-${currIndex}`}></Ad>
-            <div style={{ fontSize: '25px' }} dangerouslySetInnerHTML={{ __html: currItem }} />
+            <div className="item-section" style={{ fontSize: '25px' }} dangerouslySetInnerHTML={{ __html: currItem }} />
             <Ad adId='maor' width='728' height='90' key={`belowContent-${currIndex}`}></Ad>
             {
                 data.content.length > 1 ? (
