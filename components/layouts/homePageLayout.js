@@ -9,17 +9,20 @@ import {
   Paper,
 } from "@mantine/core";
 import Post from "./Post";
-import { getPostsWithCategoriesAndPagination } from "../common/fetchingData";
+import { getPostsWithCategoriesToExclude, getPostsWithCategoriesToInclude } from "../common/datafetching/dataFetcher";
 
 export default function Layout({ postsAmount, posts, category }) {
-  //postsAmount = 11
   const [activePage, setPage] = useState(1);
   const [currPosts, setCurrPosts] = useState(posts);
   const [isLoading, setIsLoading] = useState(false);
+
+
   const dividedPages = postsAmount / 10;
   const calcPaginationPages = Number.isInteger(dividedPages)
     ? dividedPages
     : Math.floor(dividedPages + 1);
+
+
   const handlePagiChange = async (page) => {
     setPage(page);
     window &&
@@ -28,7 +31,7 @@ export default function Layout({ postsAmount, posts, category }) {
         behavior: "smooth",
       });
     setIsLoading(true);
-    const { posts } = await getPostsWithCategoriesAndPagination(page);
+    const { posts } =category ? await getPostsWithCategoriesToInclude(page,category) : await getPostsWithCategoriesToExclude(page);
     setCurrPosts(posts);
     setIsLoading(false);
   };
@@ -57,7 +60,7 @@ export default function Layout({ postsAmount, posts, category }) {
                     m={"30px 0 20px 0"}
                   >
                     <Text fz="xl" ta="center">
-                      Latest Posts
+                      {category?currPosts[0].category : 'Latest Posts' }
                     </Text>
                   </Paper>
                   <Grid m={"30px 0 20px 0"}>
@@ -69,6 +72,8 @@ export default function Layout({ postsAmount, posts, category }) {
                           category={post.category}
                           author={post.author}
                           slug={post.slug}
+                          categorySlug ={post.categorySlug}
+                          categoriesedMode={category}
                         >
                           {i}
                         </Post>

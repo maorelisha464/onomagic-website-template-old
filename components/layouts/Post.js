@@ -6,8 +6,7 @@ import {
 import Link from "next/link";
 
 
-export default function Post({ image, title, category, author, slug }) {
-  // const { classes, theme } = useStyles();
+export default function Post({ image, title, category, author, slug, categorySlug, categoriesedMode }) {
   return (
     <Card
       withBorder
@@ -26,9 +25,21 @@ export default function Post({ image, title, category, author, slug }) {
         </Link>
       </Card.Section>
       <Card.Section mt="md">
-        <Text color={"blue"} size="sm" weight={500} m={"30px 15px 20px 15px"}>
+        {categoriesedMode ? <Text color={"blue"} size="sm" weight={500} m={"30px 15px 20px 15px"}>
           {category}
-        </Text>
+        </Text> :
+          <Link
+            style={{
+              textDecoration: "none",
+            }} href={{
+              pathname: '/category/[slug]',
+              query: { slug: categorySlug }
+            }}>
+            <Text color={"blue"} size="sm" weight={500} m={"30px 15px 20px 15px"}>
+              {category}
+            </Text>
+          </Link>}
+
       </Card.Section>
       <Card.Section mt="md">
         <Link
