@@ -71,7 +71,7 @@ export default function OnePage({ data }) {
     }, [openToPage]);
 
     useEffect(() => {
-        return advertising.resetAds
+        // return advertising.resetAds
     }, []);
 
     return (
