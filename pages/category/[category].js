@@ -1,7 +1,7 @@
 import Head from "next/head";
-import  Header1 from "../../components/layouts/headers/header1";
-import  Footer1  from "../../components/layouts/footers/footer1";
-import { getPostsWithCategoriesToInclude } from "../../components/common/datafetching/dataFetcher";
+import Header1 from "../../components/layouts/headers/header1";
+import Footer1 from "../../components/layouts/footers/footer1";
+import { getPostsWithCategories } from "../../components/common/datafetching/dataFetcher";
 import Layout from "../../components/layouts/homePageLayout";
 
 const Category = (props) => {
@@ -14,7 +14,7 @@ const Category = (props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header1 />
-      <Layout {...props} />
+      <Layout {...props} categoryPage={true} />
       <Footer1 />
     </>
   );
@@ -24,18 +24,19 @@ export default Category;
 export async function getServerSideProps({ params, req }) {
   try {
     const category = params.category;
-    const { postsAmount, posts, categories } =
-      await getPostsWithCategoriesToInclude(1, category);
+    const { postsAmount, posts, categories } = await getPostsWithCategories(true, 1, category);
     return {
       props: {
         postsAmount,
         posts,
         categories,
-        category
+        category,
       },
     };
   } catch (error) {
     console.log(error);
+    return {
+      notFound: true,
+    };
   }
 }
-

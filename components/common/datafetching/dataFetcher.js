@@ -1,18 +1,13 @@
-import { getDataWithCategoriesToExclude, getDataWithCategoriesToInclude } from "./service";
+import { getCategoryId, getPostAmount, mapPosts } from "./utils";
+import { getPostsWithCategory, getCategories } from "./dataFetcherRequests";
 
-export const getPostsWithCategoriesToExclude = async (
-  page = 1,
-  categoryToExclude = process.env.EXCLUDE_CATEGORY || "celebrity luxury"
-) => {
-  return await getDataWithCategoriesToExclude(categoryToExclude, page);
+const categoryToExcludeDefault = process.env.EXCLUDE_CATEGORY || "celebrity-luxury";
+
+export const getPostsWithCategories = async (specificCat, page = 1, slug = categoryToExcludeDefault) => {
+  const categories = await (await getCategories()).json();
+  const categoryId = getCategoryId(categories, slug);
+  const postsAmount = getPostAmount(categories, slug, specificCat);
+  const fetchedPosts = await (await getPostsWithCategory(categoryId, page, specificCat)).json();
+  const posts = mapPosts(fetchedPosts, categories);
+  return { postsAmount, posts, categories, categoryId };
 };
-
-export const getPostsWithCategoriesToInclude = async (
-  page = 1,
-  slug 
-) => {
-  return await getDataWithCategoriesToInclude(page,slug);
-};
-
-
-
