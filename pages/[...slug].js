@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import advertising from '../components/ads/advertising'
 import useUserParams from '../components/common/userParams'
 import Footer1 from '../components/layouts/footers/footer1'
 import Header1 from '../components/layouts/headers/header1'
@@ -12,7 +13,8 @@ const Post = ({ data, uaString }) => {
     const { utm_source, utm_campaign } = useUserParams(uaString);
 
     useEffect(() => {
-        tracking.track('vv', 'prepixel', 'FBClick', { utm_campaign, utm_source, article_id: articleId })
+        window.advertising = advertising;
+        tracking.track('vv', 'prepixel', 'FBClick', { utm_campaign, utm_source, article_id: articleId });
     }, []);
 
     return (

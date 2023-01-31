@@ -67,6 +67,10 @@ export default function OnePage({ data }) {
         advertising.runAuction();
     }, [openToPage]);
 
+    useEffect(() => {
+        return advertising.resetAds
+    }, []);
+
     return (
         <>
             {/* TITLE */}

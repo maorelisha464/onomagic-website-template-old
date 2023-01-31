@@ -24,9 +24,10 @@ export default function SlugLayout({ data, pageNumber }) {
     const Content = content.layout;
 
     useEffect(() => {
-        const content = onePageChannels.includes(utm_source) ? { layout: OnePage } : { layout: Gallery };
+        const content = onePageChannels.includes(utm_source) && data.content.length > 1 ? { layout: OnePage } : { layout: Gallery };
         setContent(content);
         advertising.runAuction();
+        return advertising.resetAds
     }, [])
 
     return (
@@ -34,7 +35,7 @@ export default function SlugLayout({ data, pageNumber }) {
             <Grid>
                 <Grid.Col xs={0} md={0} lg={3}>
                     <SideElement>
-                        <Ad adId='maor2' width='300' height='250' ></Ad>
+                        <Ad key={'left-sidebar'} adId='maor2' width='300' height='250' ></Ad>
                         {/* <Ad adId='maor2' width='300' height='250' selfRefresh={10000}></Ad> */}
                         <div>Article Progress:</div>
                         <Progress value={progress} label={`${progress}%`} size="xl" radius="xl" />
@@ -45,7 +46,7 @@ export default function SlugLayout({ data, pageNumber }) {
                 </Grid.Col>
                 <Grid.Col xs={0} md={3} lg={3}>
                     <SideElement>
-                        <Ad adId='maor2' width='300' height='250' ></Ad>
+                        <Ad key={'right-sidebar'} adId='maor2' width='300' height='250' ></Ad>
                         {/* <Ad adId='maor2' width='300' height='250' selfRefresh={15000}></Ad> */}
                     </SideElement>
                 </Grid.Col>
