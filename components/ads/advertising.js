@@ -321,6 +321,39 @@ class Advertising {
         console.log('************************* auction finished ***************************');
         window.firstAuctionFinished = true;
     }
+
+    resetAds = () => {
+        const googletag = window.googletag;
+        const currState = this.advertisingState;
+        const advertisingState = {
+            selfRefreshAdUnits: [],
+            renderedSelfRefreshAdUnits: [],
+            renderedSelfRefreshSlots: [],
+            newAdUnits: [],
+            renderedAdUnits: [],
+            renderedSlots: [],
+            clearedSlots: [],
+            newBids: [],
+            allBids: [],
+            totalCpm: cookies.getOno('totalCpm') || 0
+        }
+
+        if (currState.renderedSelfRefreshSlots.length) {
+            googletag.destroySlots(currState.renderedSelfRefreshSlots);
+            for (let i = 0; i < currState.renderedSelfRefreshSlots; i++) {
+                delete currState.renderedSelfRefreshSlots[i];
+            }
+        }
+
+        if (currState.renderedSlots.length) {
+            googletag.destroySlots(currState.renderedSlots);
+            for (let i = 0; i < currState.renderedSlots; i++) {
+                delete currState.renderedSlots[i];
+            }
+        }
+
+        this.advertisingState = advertisingState;
+    }
 }
 
 const advertising = new Advertising();

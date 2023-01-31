@@ -1,22 +1,22 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Ad from '../../ads/ad';
 import advertising from '../../ads/advertising';
 import { Button, Grid } from '@mantine/core';
 import Video from '../../video/video';
 import { changeUrl } from '../../common/utils';
 
-let firstRun = true;
 
 export default function Gallery({ data, pageNumber, setProgress }) {
     pageNumber = Number.isNaN(+pageNumber) ? 0 : +pageNumber;
     const [currItem, setCurrItem] = useState(data.content[pageNumber])
     const [currIndex, setCurrIndex] = useState(pageNumber);
+    const firstRun = useRef(true);
 
     const onPaginationClick = useCallback((next) => {
         const updateIndex = next ? currIndex + 1 : currIndex - 1;
         setCurrIndex(updateIndex);
         setCurrItem(data.content[updateIndex]);
-        setProgress(Math.floor((updateIndex / data.content.length) * 100));
+        setProgress(Math.floor((updateIndex + 1 / data.content.length) * 100));
         changeUrl(updateIndex);
         window && window.scrollTo({
             top: 0,
@@ -25,12 +25,16 @@ export default function Gallery({ data, pageNumber, setProgress }) {
     }, [setCurrIndex, setCurrItem, setProgress, currIndex])
 
     useEffect(() => {
-        if (firstRun) {
-            firstRun = false;
+        if (firstRun.current) {
+            firstRun.current = false;
             return;
         }
         advertising.runAuction();
     }, [currItem]);
+
+    useEffect(() => {
+        return advertising.resetAds
+    }, []);
 
     return (
         <>
@@ -54,7 +58,6 @@ export default function Gallery({ data, pageNumber, setProgress }) {
                 ) :
                     null
             }
-            <div>Item: {currIndex}</div>
         </>
 
     )
