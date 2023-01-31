@@ -79,8 +79,7 @@ bugs:
     handle event listeners between pages
     exclude onomagic category
     verify ssr on css
-    kill ads on changing page
-
+    # kill ads on changing page
 
 
 Zvika req:
