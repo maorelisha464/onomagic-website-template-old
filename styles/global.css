@@ -1,31 +1,30 @@
 html,
 body {
-    min-height: 100%;
-    min-width: 100%
+  min-height: 100%;
+  min-width: 100%;
 }
 
 #__next {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-
 a {
-    text-decoration: 'none';
+  text-decoration: none;
 }
 
 .gallery--paragraph--copyright {
-    color: #b0b0b0;
-    display: block;
-    font-size: 11px;
-    text-transform: uppercase;
+  color: #b0b0b0;
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
 }
 
 .gallery--paragraph--copyright:before {
-    content: "Source: ";
+  content: "Source: ";
 }
 
 iframe [id*="rubicom"] {
-    display: none;
+  display: none;
 }
