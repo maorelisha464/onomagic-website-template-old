@@ -18,6 +18,8 @@ const globalParams = {
     firstVisitTime: cookies.getOno('firstVisitTime') || new Date().toISOString(),
 }
 
+let userCookiesSet = false;
+
 export default function useUserParams(uaStr) {
     const UA = useUserAgent(uaStr ? uaStr : null);
     const router = useRouter();
@@ -31,17 +33,21 @@ export default function useUserParams(uaStr) {
     } = router;
 
     useEffect(() => {
-        cookies.setOno('utm_source', (utm_source || ''));
-        cookies.setOno('utm_term', (utm_term || ''));
-        cookies.setOno('utm_campaign', (utm_campaign || ''));
-        cookies.setOno('sessionId', sessionId);
-        cookies.setOno('firstVisitTime', firstVisitTime);
+        utm_source && cookies.setOno('utm_source', (utm_source || ''));
+        utm_term && cookies.setOno('utm_term', (utm_term || ''));
+        utm_campaign && cookies.setOno('utm_campaign', (utm_campaign || ''));
+        if (!userCookiesSet) {
+            cookies.setOno('sessionId', sessionId);
+            cookies.setOno('firstVisitTime', firstVisitTime);
+            userCookiesSet = true;
+        }
     }, [])
 
 
     return {
-        utm_campaign,
-        utm_source,
+        utm_campaign: utm_campaign || cookies.getOno('utm_campaign'),
+        utm_source: utm_source || cookies.getOno('utm_source'),
+        utm_term: utm_term || cookies.getOno('utm_term'),
         country: cookies.get('CF-COUNTRY') || 'unknown',
         browser: UA.browser || 'unknown',
         device: UA.isMobile ? 'mobile' : UA.isDesktop ? 'desktop' : 'tablet',

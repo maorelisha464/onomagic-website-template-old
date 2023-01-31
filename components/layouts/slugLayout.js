@@ -3,6 +3,10 @@ import React, { useState, useEffect } from "react";
 import { Grid, Progress } from '@mantine/core';
 import Ad from "../ads/ad";
 import advertising from '../ads/advertising'
+import OnePage from './content/onePage'
+import Gallery from "./content/gallery";
+import useUserParams from "../common/userParams";
+
 
 
 const SideElement = styled.div`
@@ -11,13 +15,22 @@ const SideElement = styled.div`
     top: 50px;
 `
 
-export default function SlugLayout({ content, contentProps }) {
+export default function SlugLayout({ data, pageNumber }) {
     const [progress, setProgress] = useState(0);
-    const Content = content;
-    useEffect(advertising.runAuction, [])
+    const { utm_source } = useUserParams();
+    const onePageChannels = ['facebook', 'twitter', 'tiktok']
+    const contentProps = { data, pageNumber: pageNumber || 0 }
+    const [content, setContent] = useState({ layout: Gallery });
+    const Content = content.layout;
+
+    useEffect(() => {
+        const content = onePageChannels.includes(utm_source) ? { layout: OnePage } : { layout: Gallery };
+        setContent(content);
+        advertising.runAuction();
+    }, [])
+
     return (
         <>
-
             <Grid>
                 <Grid.Col xs={0} md={0} lg={3}>
                     <SideElement>
