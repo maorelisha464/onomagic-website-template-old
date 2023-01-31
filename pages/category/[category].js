@@ -24,6 +24,7 @@ export default Category;
 export async function getServerSideProps({ params, req }) {
   try {
     const category = params.category;
+    if (category === process.env.EXCLUDE_CATEGORY) throw new Error("Trying to fetch restricted category page");
     const { postsAmount, posts, categories } = await getPostsWithCategories(true, 1, category);
     return {
       props: {
