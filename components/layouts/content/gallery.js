@@ -32,9 +32,9 @@ export default function Gallery({ data, pageNumber, setProgress }) {
         advertising.runAuction();
     }, [currItem]);
 
-    useEffect(() => {
-        return advertising.resetAds
-    }, []);
+    // useEffect(() => {
+    //      return advertising.resetAds
+    // }, []);
 
     return (
         <>

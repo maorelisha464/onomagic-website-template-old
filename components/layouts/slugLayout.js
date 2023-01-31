@@ -27,7 +27,7 @@ export default function SlugLayout({ data, pageNumber }) {
         const content = onePageChannels.includes(utm_source) && data.content.length > 1 ? { layout: OnePage } : { layout: Gallery };
         setContent(content);
         advertising.runAuction();
-        return advertising.resetAds
+        // return advertising.resetAds
     }, [])
 
 

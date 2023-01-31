@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import styled from "styled-components";
 import advertising from "./advertising";
 
@@ -202,13 +202,31 @@ const ads = {
     }
 }
 
+const destroyAd = (id) => {
+    if (typeof window === 'undefined') return;
+    const findSlot = slot => slot.getSlotElementId() === id;
+    const filterSlot = slot => slot.getSlotElementId() !== id;
+    const filterObj = obj => obj.id !== id;
+    const state = advertising.advertisingState;
+    let slot = state.renderedSlots.find(findSlot) || state.renderedSelfRefreshSlots.find(findSlot);
+    state.renderedSlots = state.renderedSlots.filter(filterSlot);
+    state.renderedSelfRefreshSlots = state.renderedSelfRefreshSlots.filter(filterSlot);
+    if (slot) {
+        window.googletag?.destroySlot && window.googletag.destroySlot([slot]);
+    }
+    state.newAdUnits = state.newAdUnits.filter(filterObj);
+    state.selfRefreshAdUnits = state.selfRefreshAdUnits.filter(filterObj);
+}
+
 function Ad({ adId, width, height, selfRefresh }) {
     const [selfRefreshCount, setSelfRefreshCount] = useState(0);
-    const [firstRun, setFirstRun] = useState(true);
     const [id, setId] = useState('');
+    const idRef = useRef(id);
+    const firstRun = useRef(true);
     const buildRefreshId = (counter) => `ad-ono-${adId}-selfrefresh${counter}-${adsCounter++}`
-
     const { sizes, dfpPath, bids } = ads[adId];
+
+    const destroyAdCallback = () => destroyAd(idRef.current);
 
     const selfRefreshLogic = (id) => {
         advertising.advertisingState.selfRefreshAdUnits.push({ sizes, id, dfpPath, bids });
@@ -219,24 +237,32 @@ function Ad({ adId, width, height, selfRefresh }) {
     }
 
     useEffect(() => {
-        if (firstRun) {
-            setFirstRun(false);
+        if (firstRun.current) {
+            firstRun.current = false;
             return;
         }
         advertising.destroySlots(id);
         const uid = buildRefreshId(selfRefreshCount);
         setId(uid);
+        //for cleanUp of selfRefresh
+        idRef.current = uid;
         selfRefreshLogic(uid);
     }, [selfRefreshCount])
 
     useEffect(() => {
         const uid = selfRefresh ? buildRefreshId(selfRefreshCount) : `ad-ono-${adId}-${adsCounter++}`;
         setId(uid);
-        if (selfRefresh) {
+        //for cleanUp of selfRefresh
+        idRef.current = uid;
+        console.log('adding new adUnit: ', uid);
+        if (selfRefresh)
             selfRefreshLogic(uid);
-            return;
-        }
-        advertising.advertisingState.newAdUnits.push({ sizes, id: uid, dfpPath, bids });
+        else
+            advertising.advertisingState.newAdUnits.push({ sizes, id: uid, dfpPath, bids });
+
+        return () => {
+            destroyAdCallback(uid)
+        };
     }, []);
 
     return (

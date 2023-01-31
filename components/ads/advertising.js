@@ -19,7 +19,6 @@ class Advertising {
             newAdUnits: [],
             renderedAdUnits: [],
             renderedSlots: [],
-            clearedSlots: [],
             newBids: [],
             allBids: [],
             totalCpm: cookies.getOno('totalCpm') || 0
@@ -332,7 +331,6 @@ class Advertising {
             newAdUnits: [],
             renderedAdUnits: [],
             renderedSlots: [],
-            clearedSlots: [],
             newBids: [],
             allBids: [],
             totalCpm: cookies.getOno('totalCpm') || 0
