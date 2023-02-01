@@ -1,7 +1,7 @@
 import React from 'react';
 import Script from 'next/script';
 import CMP from '../cmp';
-
+import FacebookPixel from '../tracking/facebookPixel';
 
 export default function AdsLibScripts() {
     return (
@@ -12,7 +12,8 @@ export default function AdsLibScripts() {
             <Script src={"/onomagic-prebid7.13.0.js"} strategy="beforeInteractive" async />
             {/* Amazon */}
             <Script src={"//c.amazon-adsystem.com/aax2/apstag.js"} strategy="beforeInteractive" async />
-            <CMP />
+            <FacebookPixel/>
+            <CMP /> 
         </>
     )
 }
