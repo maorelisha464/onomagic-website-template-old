@@ -29,10 +29,11 @@ const cookies = {
       return;
     }
   },
-  set: (key, value) => {
+  set: (key, value, hoursTtl) => {
     if (typeof document === "undefined") return;
     let date = new Date();
-    date.setTime(date.getTime() + 30 * 60 * 1000);
+    const ttl = hoursTtl ? 1000 * 60 * hoursTtl : 30 * 60 * 1000;
+    date.setTime(date.getTime() + ttl);
     let expires = "; expires=" + date.toGMTString();
     document.cookie = key + "=" + value + expires + "; path=/";
   },
