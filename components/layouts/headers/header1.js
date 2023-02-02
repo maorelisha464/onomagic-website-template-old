@@ -84,7 +84,7 @@ const Navbar = styled.div`
   `};
 `;
 
-const Item = styled(Text)`
+const Item = styled(Text, { shouldForwardProp: (props) => props !== "active" })`
   ${({ theme }) =>
     `line-height: 48px;
     border-left: 1px solid ${theme.colors.gray[1]};
@@ -106,7 +106,8 @@ const Item = styled(Text)`
       margin-top: 16px;
     }`}
 
-  ${({ active }) => active && `box-shadow: 0 2px 2px rgb(0 0 0 / 10%);`}
+    ${({ active }) => active && `box-shadow: 0 2px 2px rgb(0 0 0 / 10%);`}
+  }
 `;
 
 const BurgerMenu = styled(Burger)`
