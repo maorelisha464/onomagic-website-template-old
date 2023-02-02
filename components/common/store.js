@@ -1,5 +1,5 @@
 const ONO_COOKIE_KEY = "_gallery_data";
-import { uuidv4 } from "../common/userParams";
+import { uuidv4 } from "../common/utils";
 
 const sessionStorage = {
   getItem: (key) => {
