@@ -36,13 +36,12 @@ Advertising - based on config (position + ads config): 3-4 DAYS
     # events - slotRenderEnded + viewability
     # newSlots
     # refresh slots
-    clearSlots - memory leak
 
 
 layouts: 5-7 DAYS
     # header
     # footer
-    homepage + category
+    # homepage + category
     # regular pages - (about us, terms of use, etc.)
     regular articles + campaigns articles layout - (feed layout + gallery layout) - 2 DAYS
     # 404
@@ -75,9 +74,9 @@ bugs:
     destroy slots - not killing the slot properly
     # prebidEventsListeners ??
     # doubleClick protect - ask Yaniv
-    homePage - categories on Header
-    handle event listeners between pages
-    exclude onomagic category
+    # homePage - categories on Header
+    clearSlots - memory leak - handle event listeners between pages + check the js heap
+    # exclude onomagic category
     verify ssr on css
     # kill ads on changing page
 
