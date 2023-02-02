@@ -1,7 +1,15 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-import { Header, Container, Group, Burger, Text } from "@mantine/core";
+import {
+  Header,
+  Container,
+  Group,
+  Burger,
+  Text,
+  Drawer,
+  Divider,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import styled from "@emotion/styled";
 
@@ -29,27 +37,41 @@ export default function Header1({ categories }) {
   );
 
   return (
-    <Header height={HEADER_HEIGHT}>
-      <Wrapper>
-        <LogoContainer>
-          <Link href="/">
-            <img
-              src="https://welivelux.com/wp-content/themes/pupabc-wordpress-template/src/img/header-logo.png"
-              alt="Home"
-            />
-          </Link>
-          <Text c="dimmed" mt={4}>
-            Sharing our passion for the luxury lifestyle.
-          </Text>
-        </LogoContainer>
-        <NavbarWrapper>
-          <Container>
-            <Navbar spacing={0}>{links}</Navbar>
-          </Container>
-        </NavbarWrapper>
-        <BurgerMenu opened={opened} onClick={toggle} size="lg" mr={16} />
-      </Wrapper>
-    </Header>
+    <>
+      <Header height={HEADER_HEIGHT}>
+        <Wrapper>
+          <LogoContainer>
+            <Link href="/">
+              <img
+                src="https://welivelux.com/wp-content/themes/pupabc-wordpress-template/src/img/header-logo.png"
+                alt="Home"
+              />
+            </Link>
+            <Text c="dimmed" mt={4}>
+              Sharing our passion for the luxury lifestyle.
+            </Text>
+          </LogoContainer>
+          <NavbarWrapper>
+            <Container>
+              <Navbar spacing={0}>{links}</Navbar>
+            </Container>
+          </NavbarWrapper>
+          <BurgerMenu opened={opened} onClick={toggle} size="md" mr={16} />
+        </Wrapper>
+      </Header>
+
+      <Drawer
+        opened={opened}
+        onClose={toggle}
+        size="100%"
+        padding="md"
+        title="Navigation"
+        zIndex={1000000}
+      >
+        <Divider />
+        <DrawerBody>{links}</DrawerBody>
+      </Drawer>
+    </>
   );
 }
 
@@ -107,6 +129,13 @@ const Item = styled(Text)`
     &:hover {
       color: ${theme.primaryColor};
       box-shadow: 0 2px 2px rgb(0 0 0 / 10%);
+    }
+    
+    ${theme.fn.smallerThan("sm")} {
+      border: none;
+      padding: 0;
+      line-height: unset;
+      margin-top: 16px;
     }`}
 
   ${({ active }) => active && `box-shadow: 0 2px 2px rgb(0 0 0 / 10%);`}
@@ -116,4 +145,9 @@ const BurgerMenu = styled(Burger)`
   ${({ theme }) => `${theme.fn.largerThan("sm")} {
     display: none;
   }`}
+`;
+
+const DrawerBody = styled.div`
+  display: flex;
+  flex-direction: column;
 `;

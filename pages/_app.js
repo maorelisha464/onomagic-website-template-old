@@ -28,6 +28,18 @@ export default function App(props) {
           // },
           colorScheme: "light",
           primaryColor: "orange",
+          components: {
+            Drawer: {
+              styles: (theme) => ({
+                root: {
+                  [theme.fn.largerThan("sm")]: { display: "none" },
+                },
+                title: {
+                  fontWeight: 600,
+                },
+              }),
+            },
+          },
         }}
       >
         <Component {...pageProps} />
