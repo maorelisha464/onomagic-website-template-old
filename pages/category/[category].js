@@ -13,7 +13,7 @@ const Category = (props) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header1 />
+      <Header1 categories={props.categories} />
       <Layout {...props} categoryPage={true} />
       <Footer1 />
     </>
@@ -24,7 +24,7 @@ export default Category;
 export async function getServerSideProps({ params, req }) {
   try {
     const category = params.category;
-    if (category === process.env.EXCLUDE_CATEGORY) throw new Error("Trying to fetch restricted category page");
+    if (category === process.env.NEXT_PUBLIC_EXCLUDE_CATEGORY) throw new Error("Trying to fetch restricted category page");
     const { postsAmount, posts, categories } = await getPostsWithCategories(true, 1, category);
     return {
       props: {
