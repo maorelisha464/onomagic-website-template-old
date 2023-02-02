@@ -12,7 +12,8 @@ export default function Header1({ categories }) {
   const links = categories
     ? categories.map(
         (item) =>
-          item.slug !== "uncategorized" && (
+          item.slug !== "uncategorized" &&
+          item.slug !== process.env.NEXT_PUBLIC_EXCLUDE_CATEGORY && (
             <Item fz="md" component={Link} href={{ pathname: "/category/[slug]", query: { slug: item.slug } }} key={item.id} active={asPath.includes(item.slug)} px={15}>
               {item.name}
             </Item>
