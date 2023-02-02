@@ -1,42 +1,49 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Ad from '../../ads/ad';
 import advertising from '../../ads/advertising';
 import { Button, Grid } from '@mantine/core';
 import Video from '../../video/video';
+import { changeUrl } from '../../common/utils';
 
-let firstRun = true;
 
 export default function Gallery({ data, pageNumber, setProgress }) {
+    pageNumber = Number.isNaN(+pageNumber) ? 0 : +pageNumber;
     const [currItem, setCurrItem] = useState(data.content[pageNumber])
-    const [currIndex, setCurrIndex] = useState(Number(pageNumber || 0));
+    const [currIndex, setCurrIndex] = useState(pageNumber);
+    const firstRun = useRef(true);
 
     const onPaginationClick = useCallback((next) => {
+        const updateIndex = next ? currIndex + 1 : currIndex - 1;
+        setCurrIndex(updateIndex);
+        setCurrItem(data.content[updateIndex]);
+        setProgress(Math.floor((updateIndex / data.content.length) * 100));
+        changeUrl(updateIndex);
         window && window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
-        const updateIndex = next ? currIndex + 1 : currIndex - 1;
-        setCurrItem(data.content[updateIndex]);
-        setCurrIndex(updateIndex);
-        setProgress(Math.floor((updateIndex / data.content.length) * 100));
-    }, [])
+    }, [setCurrIndex, setCurrItem, setProgress, currIndex])
 
     useEffect(() => {
-        if (firstRun) {
-            firstRun = false
+        if (firstRun.current) {
+            firstRun.current = false;
             return;
         }
         advertising.runAuction();
     }, [currItem]);
+
+    // useEffect(() => {
+    //      return advertising.resetAds
+    // }, []);
 
     return (
         <>
             {/* TITLE */}
             {currIndex === 0 ? <div style={{ fontSize: '60px', fontWeight: 'bold' }} dangerouslySetInnerHTML={{ __html: data.title }} /> : null}
             {/* TITLE */}
-            <Video></Video>
+            {/* <Video></Video> */}
             <Ad adId='maor' width='728' height='90' key={`aboveContent-${currIndex}`}></Ad>
-            <div style={{ fontSize: '25px' }} dangerouslySetInnerHTML={{ __html: currItem }} />
+            <div className="item-section" style={{ fontSize: '25px' }} dangerouslySetInnerHTML={{ __html: currItem }} />
             <Ad adId='maor' width='728' height='90' key={`belowContent-${currIndex}`}></Ad>
             {
                 data.content.length > 1 ? (
@@ -51,7 +58,6 @@ export default function Gallery({ data, pageNumber, setProgress }) {
                 ) :
                     null
             }
-            <div>Item: {currIndex}</div>
         </>
 
     )

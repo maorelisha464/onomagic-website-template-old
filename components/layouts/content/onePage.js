@@ -3,9 +3,12 @@ import Ad from "../../ads/ad";
 import advertising from "../../ads/advertising";
 import { useInView } from 'react-intersection-observer';
 import { changeUrl } from '../../common/utils';
+import useUserParams from "../../common/userParams";
+import { Container } from "@mantine/core";
 
 
 export default function OnePage({ data }) {
+    // const { isMobile } = useUserParams();
     const [openToPage, setOpenToPage] = useState(5);
     const [firstInView, setFirstInView] = useState(0);
     const [pagesInView, setPagesInView] = useState({});
@@ -67,6 +70,10 @@ export default function OnePage({ data }) {
         advertising.runAuction();
     }, [openToPage]);
 
+    useEffect(() => {
+        // return advertising.resetAds
+    }, []);
+
     return (
         <>
             {/* TITLE */}
@@ -87,6 +94,7 @@ export default function OnePage({ data }) {
 
 
 const ItemSection = ({ item, index, onInViewChange }) => {
+    const { isMobile } = useUserParams();
     const { ref, inView } = useInView({
         /* Optional options */
         threshold: 0,
@@ -100,14 +108,13 @@ const ItemSection = ({ item, index, onInViewChange }) => {
             return;
         }
         onInViewChange(inView, index);
-
     }, [inView])
 
     return (
         <>
-            <div ref={ref}>
+            <div className="item-section" ref={ref}>
                 <div style={{ fontSize: '20px' }} dangerouslySetInnerHTML={{ __html: item }} />
-                <Ad adId='maor' width='728' height='110' ></Ad>
+                <Ad adId={isMobile ? 'maor2' : 'maor'} width={isMobile ? '300' : '728'} height={isMobile ? '270' : '110'} ></Ad>
             </div>
         </>
     )

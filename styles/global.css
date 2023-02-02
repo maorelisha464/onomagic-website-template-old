@@ -28,3 +28,8 @@ a {
 iframe [id*="rubicom"] {
   display: none;
 }
+
+.item-section img {
+  width: 100%;
+  height: auto;
+}
