@@ -9,14 +9,16 @@ export default function Header1({ categories }) {
   const { asPath } = useRouter();
   const [opened, { toggle }] = useDisclosure(false);
 
-  const links = categories.map(
-    (item) =>
-      item.slug !== "uncategorized" && (
-        <Item fz="md" component={Link} href={"/category/" + item.slug} key={item.id} active={asPath.includes(item.slug)} px={15}>
-          {item.name}
-        </Item>
+  const links = categories
+    ? categories.map(
+        (item) =>
+          item.slug !== "uncategorized" && (
+            <Item fz="md" component={Link} href={{ pathname: "/category/[slug]", query: { slug: item.slug } }} key={item.id} active={asPath.includes(item.slug)} px={15}>
+              {item.name}
+            </Item>
+          )
       )
-  );
+    : [];
 
   return (
     <>
@@ -24,18 +26,22 @@ export default function Header1({ categories }) {
         <Wrapper>
           <LogoContainer>
             <Link href="/">
-              <img src="https://welivelux.com/wp-content/themes/pupabc-wordpress-template/src/img/header-logo.png" alt="Home" />
+              <img src="/logo.webp" alt="Home" />
             </Link>
             <Text c="dimmed" mt={4}>
               Sharing our passion for the luxury lifestyle.
             </Text>
           </LogoContainer>
-          <Navbar>
-            <Container>
-              <Group spacing={0}>{links}</Group>
-            </Container>
-          </Navbar>
-          <BurgerMenu opened={opened} onClick={toggle} size="md" mr={16} />
+          {links.length > 0 && (
+            <>
+              <Navbar>
+                <Container>
+                  <Group spacing={0}>{links}</Group>
+                </Container>
+              </Navbar>
+              <BurgerMenu opened={opened} onClick={toggle} size="md" mr={16} />
+            </>
+          )}
         </Wrapper>
       </Header>
 
