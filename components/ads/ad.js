@@ -255,7 +255,6 @@ function Ad({ adId, width, height, selfRefresh }) {
     setId(uid);
     //for cleanUp of selfRefresh
     idRef.current = uid;
-    console.log("adding new adUnit: ", uid);
     if (selfRefresh) selfRefreshLogic(uid);
     else advertising.advertisingState.newAdUnits.push({ sizes, id: uid, dfpPath, bids });
 

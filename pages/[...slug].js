@@ -35,9 +35,7 @@ export default Post;
 export async function getServerSideProps({ params, req }) {
   // Fetch data from external API
   try {
-    // console.log(params)
     const res = await fetch(`https://${process.env.HOST}/wp-json/wp/v2/posts?slug=${params.slug[0]}&_embed  `);
-    // console.log(`https://${process.env.HOST}/wp-json/wp/v2/posts?slug=${params.slug[0]}`)
     const data = await res.json();
     const html = data[0]?.content?.rendered;
     const title = data[0]?.title?.rendered;
