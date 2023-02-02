@@ -26,7 +26,8 @@ export default function App(props) {
           //   lg: 1275,
           //   xl: 1800,
           // },
-          colorScheme: 'light',
+          colorScheme: "light",
+          primaryColor: "orange",
         }}
       >
         <Component {...pageProps} />
