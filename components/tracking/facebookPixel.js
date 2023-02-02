@@ -1,8 +1,8 @@
 import Script from "next/script";
 import { useEffect } from "react";
 import userParams from "../common/userParams";
-/// TODO external id
-/// TODO think of where to store pixels env?
+import { cookies } from "../common/store";
+
 
 const FacebookPixel = () => {
   const { utm_source } = userParams();
@@ -12,9 +12,10 @@ const FacebookPixel = () => {
   if (!shouldRun) return null;
 
   useEffect(() => {
-    window.fbq("init", 500765417046434);
-    window.fbq("init", 1118320162091869);
-    window.fbq("init", 469637394515950);
+    const externalId = cookies.externalId();
+    window.fbq("init", 500765417046434, { external_id: externalId });
+    window.fbq("init", 1118320162091869, { external_id: externalId });
+    window.fbq("init", 469637394515950, { external_id: externalId });
   }, []);
 
   return (
