@@ -2,12 +2,12 @@
 import Script from "next/script";
 import { useEffect } from "react";
 
-const HOST = 'dailyfitnesstip.com';
-const QC_ID = '4384sJsMMMffm';
+const HOST = "dailyfitnesstip.com";
+const QC_ID = "4384sJsMMMffm";
 
 export default function CMP() {
-    const quantCastCode = () => {
-        return `
+  const quantCastCode = () => {
+    return `
         var host = '${HOST}';
         var element = document.createElement('script');
         var firstScript = document.getElementsByTagName('script')[0];
@@ -164,15 +164,16 @@ export default function CMP() {
             window.__uspapi = uspStubFunction;
             var uspInterval = setInterval(checkIfUspIsReady, 6000);
         }
-        `
+        `;
+  };
 
-    }
-
-    return (
-        <>
-            <Script dangerouslySetInnerHTML={{
-                __html: quantCastCode()
-            }}></Script>
-        </>
-    );
+  return (
+    <>
+      <Script
+        dangerouslySetInnerHTML={{
+          __html: quantCastCode(),
+        }}
+      ></Script>
+    </>
+  );
 }

@@ -1,45 +1,32 @@
-import {
-  Card,
-  Image,
-  Text,
-} from "@mantine/core";
+import { Card, Image, Text } from "@mantine/core";
 import Link from "next/link";
-
 
 export default function Post({ image, title, category, author, slug, categorySlug, categoriesedMode }) {
   return (
-    <Card
-      withBorder
-      radius="md"
-      p="md"
-      align={"center"}
-      style={{ maxHeight: "400px", height: "400px" }}
-    >
+    <Card withBorder radius="md" p="md" align={"center"} style={{ maxHeight: "400px", height: "400px" }}>
       <Card.Section>
-        <Link href={`/${slug}`}>
-          {image ? (
-            <Image src={image} alt={title} height={180} />
-          ) : (
-            <div style={{ height: "180px" }} />
-          )}
-        </Link>
+        <Link href={`/${slug}`}>{image ? <Image src={image} alt={title} height={180} /> : <div style={{ height: "180px" }} />}</Link>
       </Card.Section>
       <Card.Section mt="md">
-        {categoriesedMode ? <Text color={"blue"} size="sm" weight={500} m={"30px 15px 20px 15px"}>
-          {category}
-        </Text> :
+        {categoriesedMode ? (
+          <Text color={"blue"} size="sm" weight={500} m={"30px 15px 20px 15px"}>
+            {category}
+          </Text>
+        ) : (
           <Link
             style={{
               textDecoration: "none",
-            }} href={{
-              pathname: '/category/[slug]',
-              query: { slug: categorySlug }
-            }}>
+            }}
+            href={{
+              pathname: "/category/[slug]",
+              query: { slug: categorySlug },
+            }}
+          >
             <Text color={"blue"} size="sm" weight={500} m={"30px 15px 20px 15px"}>
               {category}
             </Text>
-          </Link>}
-
+          </Link>
+        )}
       </Card.Section>
       <Card.Section mt="md">
         <Link
