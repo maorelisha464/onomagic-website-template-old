@@ -12,6 +12,7 @@ const FacebookPixel = () => {
   if (!shouldRun) return null;
 
   useEffect(() => {
+    if (typeof window === "undefined" || !window.fbq) return;
     window.fbq("init", 500765417046434);
     window.fbq("init", 1118320162091869);
     window.fbq("init", 469637394515950);
@@ -19,7 +20,7 @@ const FacebookPixel = () => {
 
   return (
     <>
-      <Script id="facebook-pixel" strategy="beforeInteractive">
+      <Script id="facebook-pixel" strategy="afterInteractive">
         {` (function (f, b, e, v, n, t, s) {
             if (f.fbq) return;
             n = f.fbq = function () {
