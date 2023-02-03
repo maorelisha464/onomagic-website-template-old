@@ -50,9 +50,7 @@ export default function Header1({ categories }) {
           <Link href="/" style={{ textDecoration: "none" }}>
             <HeaderTitle>We Live Lux</HeaderTitle>
           </Link>
-          <HeaderSubtitle>
-            Sharing our passion for the luxury lifestyle.
-          </HeaderSubtitle>
+          <HeaderSubtitle>Sharing our passion for the luxury lifestyle.</HeaderSubtitle>
         </Container>
       </HeaderWrapper>
       {

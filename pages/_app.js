@@ -8,10 +8,7 @@ export default function App(props) {
   return (
     <>
       <Head>
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width"
-        />
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <AdsLibScripts />
       <MantineProvider
@@ -26,7 +23,7 @@ export default function App(props) {
           //   lg: 1275,
           //   xl: 1800,
           // },
-          colorScheme: 'light',
+          colorScheme: "light",
         }}
       >
         <Component {...pageProps} />
