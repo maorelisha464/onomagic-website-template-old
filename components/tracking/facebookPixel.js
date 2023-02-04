@@ -19,7 +19,7 @@ const FacebookPixel = () => {
 
   return (
     <>
-      <Script id="facebook-pixel" strategy="beforeInteractive">
+      <Script id="facebook-pixel" strategy="afterInteractive">
         {` (function (f, b, e, v, n, t, s) {
             if (f.fbq) return;
             n = f.fbq = function () {
