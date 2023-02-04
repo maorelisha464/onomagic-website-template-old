@@ -19,10 +19,11 @@ export default function SlugLayout({ data, pageNumber }) {
   const onePageChannels = ["facebook", "twitter", "tiktok"];
   const layoutTypeGallery = !onePageChannels.includes(utm_source);
   const contentProps = { data, pageNumber: pageNumber || 0 };
-  const [content, setContent] = useState({ layout: layoutTypeGallery ? Gallery : OnePage });
+  const [content, setContent] = useState(null);
   const Content = content && content.layout;
 
   useEffect(() => {
+    setContent({ layout: layoutTypeGallery ? Gallery : OnePage });
     advertising.runAuction();
   }, []);
 
