@@ -96,6 +96,8 @@ const ItemSection = ({ item, index, onInViewChange }) => {
 
   const contentPart1 = item.split("<img")[0];
   const contentPart2 = "<img" + item.split("<img")[1];
+  const canShowFirstAd = index !== 0;
+  const canShowSecondAd = index !== 0 && index !== 1;
 
   useEffect(() => {
     if (!didMount.current) {
@@ -109,9 +111,9 @@ const ItemSection = ({ item, index, onInViewChange }) => {
     <>
       <div className="item-section" ref={ref}>
         {parse(contentPart1)}
-        <Ad adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>
+        {canShowFirstAd && <Ad adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>}
         {parse(contentPart2)}
-        <Ad adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>
+        {canShowSecondAd && <Ad adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>}
       </div>
     </>
   );
