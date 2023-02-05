@@ -14,7 +14,7 @@ const Post = ({ data, uaString }) => {
 
   useEffect(() => {
     window.advertising = advertising;
-    tracking.track("vv", "prepixel", "FBClick", { utm_campaign, utm_source, article_id: articleId });
+    // tracking.track("vv", "prepixel", "FBClick", { utm_campaign, utm_source, article_id: articleId });
   }, []);
 
   return (
@@ -35,7 +35,7 @@ export default Post;
 export async function getServerSideProps({ params, req }) {
   // Fetch data from external API
   try {
-    const res = await fetch(`https://${process.env.HOST}/wp-json/wp/v2/posts?slug=${params.slug[0]}&_embed  `);
+    const res = await fetch(`https://${process.env.NEXT_PUBLIC_HOST}/wp-json/wp/v2/posts?slug=${params.slug[0]}&_embed  `);
     const data = await res.json();
     const html = data[0]?.content?.rendered;
     const title = data[0]?.title?.rendered;

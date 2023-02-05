@@ -23,8 +23,11 @@ export default function SlugLayout({ data, pageNumber }) {
   const Content = content && content.layout;
 
   useEffect(() => {
+    if (content) advertising.runAuction();
+  }, [content]);
+
+  useEffect(() => {
     setContent({ layout: layoutTypeGallery ? Gallery : OnePage });
-    advertising.runAuction();
   }, []);
 
   return (

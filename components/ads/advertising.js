@@ -1,6 +1,5 @@
 import React from "react";
 import { cookies } from "../common/store";
-// import { staticUserParams } from '../common/userParams';
 import { withGPTQueue, withPrebidQueue } from "./adsQueue";
 import { bidAdjustments, buildPrebidConfig, prebidEventsListeners, gptEventsListeners } from "./advertisingHelpers";
 import amazonBidsMap from "./amazonBidsMap";
@@ -302,7 +301,7 @@ class Advertising {
     });
     if (slots.length) googletag.pubads().refresh(slots);
     this.stateAfterAuction(slots, unitID);
-    console.log("************************* auction finished ***************************");
+    // console.log("************************* auction finished ***************************");
     window.firstAuctionFinished = true;
   };
 

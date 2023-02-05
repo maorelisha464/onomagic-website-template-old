@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { cookies } from "./store";
 import { useUserAgent } from "next-useragent";
 import { useEffect } from "react";
+import tracking from "../tracking/tracking";
 
 export const uuidv4 = () => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
@@ -11,30 +12,31 @@ export const uuidv4 = () => {
   });
 };
 
-const globalParams = {
-  sessionId: cookies.getOno("sessionId") || uuidv4(),
-  firstVisitTime: cookies.getOno("firstVisitTime") || new Date().toISOString(),
+const setSession = () => {
+  if (cookies.getOno("sessionId")) return;
+  const sessionId = uuidv4();
+  cookies.setOno("sessionId", sessionId);
+  cookies.setOno("firstVisitTime", new Date().toISOString());
+  tracking.trackSessionInit();
 };
 
-let userCookiesSet = false;
+let initPageParams = false;
 
 export default function useUserParams(uaStr) {
   const UA = useUserAgent(uaStr ? uaStr : null);
   const router = useRouter();
-  const { sessionId, firstVisitTime } = globalParams;
   const {
     query: { utm_campaign, utm_source, utm_term },
   } = router;
 
   useEffect(() => {
-    utm_source && cookies.setOno("utm_source", utm_source || "");
-    utm_term && cookies.setOno("utm_term", utm_term || "");
-    utm_campaign && cookies.setOno("utm_campaign", utm_campaign || "");
-    if (!userCookiesSet) {
-      cookies.setOno("sessionId", sessionId);
-      cookies.setOno("firstVisitTime", firstVisitTime);
-      userCookiesSet = true;
-    }
+    // if(!(utm_campaign || utm_source || utm_term)) return;
+    if (initPageParams) return;
+    else initPageParams = true;
+    utm_source && cookies.setOno("utm_source", utm_source);
+    utm_term && cookies.setOno("utm_term", utm_term);
+    utm_campaign && cookies.setOno("utm_campaign", utm_campaign);
+    setSession();
   }, []);
 
   const isMobile = typeof window !== "undefined" ? Math.min(window.screen.width, window.screen.height) < 768 : UA.isMobile;
@@ -57,7 +59,7 @@ export default function useUserParams(uaStr) {
     isBot: UA.isBot,
     os: UA.os || "unknown",
     ua: UA.source || "",
-    sessionId,
-    firstVisitTime,
+    sessionId: cookies.getOno("sessionId"),
+    firstVisitTime: cookies.getOno("firstVisitTime"),
   };
 }

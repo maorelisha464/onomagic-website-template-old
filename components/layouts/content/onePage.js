@@ -6,6 +6,8 @@ import { useInView } from "react-intersection-observer";
 import { changeUrl } from "../../common/utils";
 import useUserParams from "../../common/userParams";
 import { Container, Title, Text } from "@mantine/core";
+import tracking from "../../tracking/tracking";
+
 export default function OnePage({ data }) {
   // const { isMobile } = useUserParams();
   const [openToPage, setOpenToPage] = useState(5);
@@ -39,7 +41,7 @@ export default function OnePage({ data }) {
     const val = pagesInView[firstInView];
     if (val && !val.tracked) {
       //track pageView
-      console.log("TrackPageView: ", firstInView);
+      tracking.trackPageView(firstInView);
       const sectionObj = pagesInView[firstInView];
       sectionObj.tracked = true;
       setPagesInView({ ...pagesInView, [firstInView]: sectionObj });
@@ -51,7 +53,7 @@ export default function OnePage({ data }) {
       firstRunPagesInView.current = false;
       return;
     }
-    const firstPageInView = Object.entries(pagesInView).find(([key, val]) => val.inView);
+    const firstPageInView = Object.entries(pagesInView).find(([page, val]) => val.inView);
     const [page, val] = firstPageInView || [];
     if (page && page !== firstInView) {
       setFirstInView(page);
