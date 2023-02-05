@@ -1,5 +1,6 @@
 const ONO_COOKIE_KEY = "_gallery_data";
-import { uuidv4 } from "../common/userParams";
+import { uuidv4 } from "../common/utils";
+
 const sessionStorage = {
   getItem: (key) => {
     const value = window?.sessionStorage?.[key];
@@ -32,7 +33,7 @@ const cookies = {
   set: (key, value, hoursTtl) => {
     if (typeof document === "undefined") return;
     let date = new Date();
-    const ttl = hoursTtl ? 1000 * 60 * hoursTtl : 30 * 60 * 1000;
+    const ttl = hoursTtl ? hoursTtl * 60 * 60 * 1000: 30 * 60 * 1000;
     date.setTime(date.getTime() + ttl);
     let expires = "; expires=" + date.toGMTString();
     document.cookie = key + "=" + value + expires + "; path=/";
@@ -46,6 +47,10 @@ const cookies = {
     const onoCookie = cookies.get(ONO_COOKIE_KEY);
     const onoCookieObj = onoCookie ? JSON.parse(decodeURIComponent(onoCookie)) : {};
     return key ? onoCookieObj[key] : onoCookieObj;
+  },
+  externalId: () => {
+    cookies.get("_d") ? cookies.set("_d", cookies.get("_d"), 24) : cookies.set("_d", uuidv4(), 24);
+    return cookies.get("_d");
   },
 };
 
