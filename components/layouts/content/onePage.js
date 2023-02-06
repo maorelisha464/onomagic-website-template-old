@@ -6,8 +6,11 @@ import { useInView } from "react-intersection-observer";
 import { changeUrl } from "../../common/utils";
 import useUserParams from "../../common/userParams";
 import { Container, Title, Text } from "@mantine/core";
+import SideBySideAds from "../../ads/SideBySideAds";
+import MobileStickyAd from "../../ads/MobileStickyAd";
+
 export default function OnePage({ data }) {
-  // const { isMobile } = useUserParams();
+  const { isMobile } = useUserParams();
   const [openToPage, setOpenToPage] = useState(5);
   const [firstInView, setFirstInView] = useState(0);
   const [pagesInView, setPagesInView] = useState({});
@@ -79,6 +82,7 @@ export default function OnePage({ data }) {
       </Text>
       {data.content.map((item, index) => index < openToPage && <ItemSection key={index} index={index} item={item} onInViewChange={onItemInViewChange}></ItemSection>)}
       <div ref={endOfContentRef}></div>
+      {isMobile ? <MobileStickyAd adId={"maor3"} /> : null}
     </>
   );
 }
@@ -108,7 +112,7 @@ const ItemSection = ({ item, index, onInViewChange }) => {
         {parse(contentPart1)}
         <Ad adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>
         {parse(contentPart2)}
-        <Ad adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>
+        <SideBySideAds />
       </div>
     </>
   );

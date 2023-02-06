@@ -31,13 +31,7 @@ export default function SlugLayout({ data, pageNumber }) {
     <>
       <Grid>
         <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
-          <Grid.Col lg={3}>
-            <SideElement>
-              <Ad key={"left-sidebar"} adId="maor2" width="300" height="250"></Ad>
-              {/* <Ad adId='maor2' width='300' height='250' selfRefresh={10000}></Ad> */}
-              <div>Article Progress:</div>
-              <Progress value={progress} label={`${progress}%`} size="xl" radius="xl" />
-            </SideElement>
+          <Grid.Col lg={2}>
           </Grid.Col>
         </MediaQuery>
 

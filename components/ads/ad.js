@@ -27,6 +27,7 @@ const AdWrapperTitle = styled.div`
 const AdWrapper = styled.div`
   background: #f1f1f1;
   margin: 30px auto;
+  text-align: center;
   width: ${(props) => (props.width ? `${props.width}px` : "300px")};
   height: ${(props) => (props.height ? `${props.height}px` : "250px")};
 `;
@@ -201,6 +202,100 @@ const ads = {
       },
     ],
   },
+  maor3: {
+    sizes: [[320, 50]],
+    dfpPath: "/22029607954/ODFT_320X50_728X90_STICKY_IS",
+    bids: [
+      {
+        bidder: "yieldmo",
+        params: {
+          placementId: "2687872682556334165", // 320x50
+        },
+      },
+      {
+        bidder: "onopubmatic",
+        params: {
+          publisherId: "159477",
+          adSlot: "dailyfitnesstip_320x50_",
+        },
+      },
+      {
+        bidder: "gumgum",
+        params: {
+          slot: "88260",
+          zone: "2tcxfb87",
+        },
+      },
+      {
+        bidder: "nobid",
+        params: {
+          siteId: "22149860525",
+        },
+      },
+      {
+        bidder: "33across",
+        params: {
+          siteId: "bbKgAcfgWr64oHaKlId8sQ",
+          productId: "siab",
+        },
+      },
+      {
+        bidder: "sonobi",
+        params: {
+          placement_id: "047b0cb9d7e154d61256",
+          ad_unit: "/22029607954/ODFT_320X50_728X90_STICKY_IS",
+        },
+      },
+      {
+        bidder: "sovrn",
+        params: {
+          tagid: "794569",
+        },
+      },
+      {
+        bidder: "onetag",
+        params: {
+          pubId: "698d141faf72afe",
+        },
+      },
+      {
+        bidder: "onoapn",
+        params: {
+          placementId: 20604668,
+        },
+      },
+      {
+        bidder: "underdogmedia",
+        params: {
+          siteId: 15924,
+        },
+      },
+      {
+        bidder: "openx",
+        params: {
+          unit: "543981875",
+          delDomain: "onomagic-d.openx.net",
+          customFloor: 0.03,
+        },
+      },
+      {
+        bidder: "yahoossp",
+        params: {
+          // 320x50
+          dcn: "8a9698c3017777fced36febcdaa700d4",
+          pos: "8a96959b017777fcf5e8febd252000ba",
+        },
+        labelAny: ["mobile"],
+      },
+      {
+        bidder: "ix",
+        params: {
+          siteId: "730453",
+          size: [320, 50],
+        },
+      },
+    ],
+  },
 };
 
 const destroyAd = (id) => {
@@ -219,14 +314,13 @@ const destroyAd = (id) => {
   state.selfRefreshAdUnits = state.selfRefreshAdUnits.filter(filterObj);
 };
 
-function Ad({ adId, width, height, selfRefresh }) {
+function Ad({ adId, width, height, selfRefresh, withoutWrapper, className }) {
   const [selfRefreshCount, setSelfRefreshCount] = useState(0);
   const [id, setId] = useState("");
   const idRef = useRef(id);
   const firstRun = useRef(true);
   const buildRefreshId = (counter) => `ad-ono-${adId}-selfrefresh${counter}-${adsCounter++}`;
   const { sizes, dfpPath, bids } = ads[adId];
-
   const destroyAdCallback = () => destroyAd(idRef.current);
 
   const selfRefreshLogic = (id) => {
@@ -263,8 +357,10 @@ function Ad({ adId, width, height, selfRefresh }) {
     };
   }, []);
 
-  return (
-    <AdWrapper width={width} height={height}>
+  return withoutWrapper ? (
+    <div id={id} key={id}></div>
+  ) : (
+    <AdWrapper className={className} width={width} height={height}>
       <AdWrapperTitle>
         <span>ADVERTISEMENT</span>
       </AdWrapperTitle>
