@@ -25,7 +25,7 @@ export default function Header1({ categories }) {
     <>
       <Header>
         <Wrapper>
-          <LogoContainer>
+          <LogoContainer size="lg">
             <Link href="/">
               <img src="/logo.webp" alt="Home" />
             </Link>
@@ -36,7 +36,7 @@ export default function Header1({ categories }) {
           {links.length > 0 && (
             <>
               <Navbar>
-                <Container>
+                <Container size="lg">
                   <Group spacing={0}>{links}</Group>
                 </Container>
               </Navbar>

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
-import { Container, Grid, MediaQuery, Progress } from "@mantine/core";
+import { Container } from "@mantine/core";
 import Ad from "../ads/ad";
 import advertising from "../ads/advertising";
 import OnePage from "./content/onePage";
@@ -29,25 +29,17 @@ export default function SlugLayout({ data, pageNumber }) {
 
   return (
     <>
-      <Grid>
-        <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
-          <Grid.Col lg={2}>
-          </Grid.Col>
-        </MediaQuery>
-
-        <Grid.Col md={9} lg={6}>
-          <Container>{content && <Content {...contentProps} setProgress={setProgress}></Content>}</Container>
-        </Grid.Col>
-
-        <MediaQuery smallerThan="md" styles={{ display: "none" }}>
-          <Grid.Col md={3} lg={3}>
-            <SideElement>
-              <Ad key={"right-sidebar"} adId="maor2" width="300" height="250"></Ad>
-              {/* <Ad adId="maor2" width="300" height="250" selfRefresh={15000}></Ad> */}
-            </SideElement>
-          </Grid.Col>
-        </MediaQuery>
-      </Grid>
+      <Container size="lg" style={{ display: "flex", width: "100%" }}>
+        {content && (
+          <div style={{ maxWidth: "100%" }}>
+            <Content {...contentProps} setProgress={setProgress}></Content>
+          </div>
+        )}
+        <SideElement style={{ marginLeft: "20px" }}>
+          <Ad key={"right-sidebar"} adId="maor2" width="300" height="250"></Ad>
+          {/* <Ad adId="maor2" width="300" height="250" selfRefresh={15000}></Ad> */}
+        </SideElement>
+      </Container>
     </>
   );
 }
