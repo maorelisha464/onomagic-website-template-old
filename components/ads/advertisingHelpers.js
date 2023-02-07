@@ -1,4 +1,5 @@
 import { cookies } from "../common/store";
+import tracking from "../tracking/tracking";
 import { withGPTQueue } from "./adsQueue";
 import advertising from "./advertising";
 
@@ -216,12 +217,14 @@ const slotRenderEnded = (data) => {
   const slotId = slot.getSlotElementId();
   const html = slot.getHtml();
   const bidWinner = getBidWinner(data, html); // [nobid, amazon, prebid, adx]
+  const isWinnigBid = bidWinner !== "nobid";
   const maxBid = slot.bids.reduce((currMaxBid, bid) => (currMaxBid.cpm >= bid.cpm ? currMaxBid : bid), { cpm: 0, bidder: "nobid" });
   const estRevenueCpm = calcEstimatedRevenue(bidWinner, maxBid);
   if (estRevenueCpm) {
     advertising.advertisingState.totalCpm += estRevenueCpm;
     cookies.setOno("totalCpm", advertising.advertisingState.totalCpm);
   }
+  tracking.trackPageValue(estRevenueCpm, slot.onoProps.page, isWinnigBid);
   detectDoubleClick();
 };
 

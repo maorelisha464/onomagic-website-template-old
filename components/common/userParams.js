@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { uuidv4 } from "./utils";
 import tracking from "../tracking/tracking";
 
-
 const setSession = () => {
   if (cookies.getOno("sessionId")) return;
   const sessionId = uuidv4();
@@ -15,6 +14,8 @@ const setSession = () => {
 };
 
 let initPageParams = false;
+
+export const userParams = {};
 
 export default function useUserParams(uaStr) {
   const UA = useUserAgent(uaStr ? uaStr : null);
@@ -55,5 +56,6 @@ export default function useUserParams(uaStr) {
     ua: UA.source || "",
     sessionId: cookies.getOno("sessionId"),
     firstVisitTime: cookies.getOno("firstVisitTime"),
+    article_id: null,
   };
 }

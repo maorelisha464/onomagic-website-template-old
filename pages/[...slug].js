@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import advertising from "../components/ads/advertising";
-import useUserParams from "../components/common/userParams";
+import { userParams } from "../components/common/userParams";
 import Footer1 from "../components/layouts/footers/footer1";
 import Header1 from "../components/layouts/headers/header1";
 import SlugLayout from "../components/layouts/slugLayout";
@@ -10,7 +10,8 @@ import tracking from "../components/tracking/tracking";
 
 const Post = ({ data, uaString }) => {
   const { articleId, page } = data;
-  const { utm_source, utm_campaign } = useUserParams(uaString);
+  const { utm_source, utm_campaign } = userParams;
+  userParams.article_id = articleId;
 
   useEffect(() => {
     window.advertising = advertising;

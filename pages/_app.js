@@ -2,9 +2,18 @@ import "../styles/global.css";
 import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
 import AdsLibScripts from "../components/ads/adsLibScripts";
+import useUserParams, { userParams } from "../components/common/userParams";
+import { useEffect } from "react";
 
 export default function App(props) {
   const { Component, pageProps } = props;
+  const appUserParams = useUserParams();
+  Object.assign(userParams, appUserParams);
+  console.log("maor21321312");
+  // useEffect(() => {
+  //   Object.assign(userParams, appUserParams);
+  // }, [appUserParams]);
+
   return (
     <>
       <Head>

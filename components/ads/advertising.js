@@ -18,6 +18,7 @@ class Advertising {
       newBids: [],
       allBids: [],
       totalCpm: cookies.getOno("totalCpm") || 0,
+      pagesRpms: cookies.getOno("pagesRpms") || {},
     };
     this.advertisingState = advertisingState;
     this.initFinished = false;

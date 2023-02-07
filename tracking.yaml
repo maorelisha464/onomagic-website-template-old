@@ -1,68 +1,37 @@
 PageVideoValue:
-    event: PageVideoValue
-    page: 28
-    article_id: 9049
-    article_name: test1
-    article_title: test
-    value: 0.004167
-    currency: USD
-    avg_page_rpm: 0.23558810420137932
-    total_page_rpm: 6.8320550218400005
-    total_value: 0.00683205502184
-    winning_bids: 1
-    ad_slots: 1
-    fab_result:     language: en-US
-    utm_source: undefined
-    utm_campaign: undefined
-    display: infinite_scroll
-    domain: welivelux.com
-    pbc: 1
-    videotest: vidazoo
-    session: 16f59bd0-376b-4bf1-b513-b90bd9a2a0e8
-    version: lux-0.0.22
-    testing: A
-    country: IL
+  event: PageVideoValue
+  page: 28
+  article_id: 9049
+  value: 0.004167
+  utm_source: undefined
+  utm_campaign: undefined
+  domain: welivelux.com
 
 PageView:
-    event: PageView
-    page: 1
-    article_id: 9049
-    article_name: test1
-    article_title: test
-    utm_source: facebook
-    utm_campaign: 123
-    domain: welivelux.com
-    pbc: 1
-    videotest: vidazoo
-    session: 16f59bd0-376b-4bf1-b513-b90bd9a2a0e8
-    display: infinite_scroll
-    version: lux-0.0.22
-    testing: A
-    country: IL
-    cb: 950498719
+  event: PageView
+  page: 1
+  article_id: 9049
+  utm_source: facebook
+  utm_campaign: 123
+  domain: welivelux.com
+  cb: 950498719
 
 PageValue:
-    event: PageValue
-    page: 2
-    article_id: 9049
-    article_name: test1
-    article_title: test
-    value: 0.00011446
-    currency: USD
-    avg_page_rpm: 0.46777977060666664
-    total_page_rpm: 16.84007174184
-    total_value: 0.01684007174184
-    winning_bids: 1
-    ad_slots: 1
-    fab_result: language: en-US
-    utm_source: facebook
-    utm_campaign: 123
-    display: infinite_scroll
-    domain: welivelux.com
-    pbc: 1
-    videotest: vidazoo
-    session: 16f59bd0-376b-4bf1-b513-b90bd9a2a0e8
-    version: lux-0.0.22
-    testing: A
-    country: IL
-    cb: 1819778475
+  event: PageValue
+  page: 2
+  article_id: 9049
+  value: 0.00011446
+  winning_bids: 1
+  ad_slots: 1
+  utm_source: facebook
+  utm_campaign: 123
+  domain: welivelux.com
+  cb: 1819778475
+
+FBClick:
+  event: FBClick
+  utm_campaign: 123
+  utm_source: facebook
+  article_id: 9049
+  domain: welivelux.com
+  cb: 1819778475

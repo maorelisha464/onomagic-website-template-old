@@ -4,20 +4,21 @@ import Ad from "../../ads/ad";
 import advertising from "../../ads/advertising";
 import { useInView } from "react-intersection-observer";
 import { changeUrl } from "../../common/utils";
-import useUserParams from "../../common/userParams";
+import { userParams } from "../../common/userParams";
 import { Container, Title, Text } from "@mantine/core";
 import tracking from "../../tracking/tracking";
 
 export default function OnePage({ data }) {
-  // const { isMobile } = useUserParams();
   const [openToPage, setOpenToPage] = useState(5);
   const [firstInView, setFirstInView] = useState(0);
   const [pagesInView, setPagesInView] = useState({});
-  const firstRunFirstInView = useRef(true);
-  const firstRunOpenToPage = useRef(true);
-  const firstRunPagesInView = useRef(true);
   const { ref: endOfContentRef, inView: openMore } = useInView({
     rootMargin: "500px",
+  });
+  const firstRun = useRef({
+    firstInView: true,
+    openToPage: true,
+    pagesInView: true,
   });
 
   const onItemInViewChange = useCallback(
@@ -32,8 +33,8 @@ export default function OnePage({ data }) {
   );
 
   useEffect(() => {
-    if (firstRunFirstInView.current) {
-      firstRunFirstInView.current = false;
+    if (firstRun.current.firstInView) {
+      firstRun.current.firstInView = false;
       return;
     }
     console.log("firstInView", firstInView);
@@ -49,8 +50,8 @@ export default function OnePage({ data }) {
   }, [firstInView]);
 
   useEffect(() => {
-    if (firstRunPagesInView.current) {
-      firstRunPagesInView.current = false;
+    if (firstRun.current.pagesInView) {
+      firstRun.current.pagesInView = false;
       return;
     }
     const firstPageInView = Object.entries(pagesInView).find(([page, val]) => val.inView);
@@ -69,8 +70,8 @@ export default function OnePage({ data }) {
   }, [openMore]);
 
   useEffect(() => {
-    if (firstRunOpenToPage.current) {
-      firstRunOpenToPage.current = false;
+    if (firstRun.current.openToPage) {
+      firstRun.current.openToPage = false;
       return;
     }
     advertising.runAuction();
@@ -89,7 +90,7 @@ export default function OnePage({ data }) {
 }
 
 const ItemSection = ({ item, index, onInViewChange }) => {
-  const { isMobile } = useUserParams();
+  const { isMobile } = userParams;
   const { ref, inView } = useInView({
     /* Optional options */
     threshold: 0,
