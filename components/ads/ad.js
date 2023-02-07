@@ -219,7 +219,7 @@ const destroyAd = (id) => {
   state.selfRefreshAdUnits = state.selfRefreshAdUnits.filter(filterObj);
 };
 
-function Ad({ adId, width, height, selfRefresh }) {
+function Ad({ adId, width, height, selfRefresh, page = -1 }) {
   const [selfRefreshCount, setSelfRefreshCount] = useState(0);
   const [id, setId] = useState("");
   const idRef = useRef(id);
@@ -256,8 +256,7 @@ function Ad({ adId, width, height, selfRefresh }) {
     //for cleanUp of selfRefresh
     idRef.current = uid;
     if (selfRefresh) selfRefreshLogic(uid);
-    else advertising.advertisingState.newAdUnits.push({ sizes, id: uid, dfpPath, bids });
-
+    else advertising.advertisingState.newAdUnits.push({ sizes, id: uid, dfpPath, bids, page });
     return () => {
       destroyAdCallback(uid);
     };

@@ -186,7 +186,7 @@ const getBidWinner = (data, html) => {
 };
 
 const calcEstimatedRevenue = (bidWinner, maxBid) => {
-  if (bidWinner === "nobid") return 0.1; // nobid from amazon and prebid
+  if (bidWinner === "nobid") return 0.1; // empty slot
   if (bidWinner === "adx") return maxBid.cpm * 1.55;
   return maxBid.cpm;
 };
@@ -213,18 +213,18 @@ const detectDoubleClick = (slotId) => {
 
 const slotRenderEnded = (data) => {
   const slot = data?.slot;
-  if (!(slot && slot.bids)) return;
+  if (!slot?.onoParams) return;
   const slotId = slot.getSlotElementId();
   const html = slot.getHtml();
   const bidWinner = getBidWinner(data, html); // [nobid, amazon, prebid, adx]
   const isWinnigBid = bidWinner !== "nobid";
-  const maxBid = slot.bids.reduce((currMaxBid, bid) => (currMaxBid.cpm >= bid.cpm ? currMaxBid : bid), { cpm: 0, bidder: "nobid" });
+  const maxBid = slot.onoParams.bids.reduce((currMaxBid, bid) => (currMaxBid.cpm >= bid.cpm ? currMaxBid : bid), { cpm: 0, bidder: "nobid" });
   const estRevenueCpm = calcEstimatedRevenue(bidWinner, maxBid);
   if (estRevenueCpm) {
     advertising.advertisingState.totalCpm += estRevenueCpm;
     cookies.setOno("totalCpm", advertising.advertisingState.totalCpm);
   }
-  tracking.trackPageValue(estRevenueCpm, slot.onoProps.page, isWinnigBid);
+  tracking.trackPageValue(estRevenueCpm / 1000, slot.onoParams.page, isWinnigBid);
   detectDoubleClick();
 };
 

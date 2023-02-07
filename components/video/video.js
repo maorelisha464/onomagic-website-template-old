@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { cookies } from "../common/store";
 import { userParams } from "../common/userParams";
+import tracking from "../tracking/tracking";
 
 const VideoDiv = styled.div``;
 
@@ -26,23 +27,7 @@ export default function Video({}) {
       const vidazooNetValue = info.netCpm - info.adServingFee;
       const currTotalVideoCpm = cookies.getOno("totalVideoCpm") || 0;
       cookies.setOno("totalVideoCpm", currTotalVideoCpm + vidazooNetValue);
-      // if (window.tracking) {
-      //     window.tracking.trackCustomPageValue({
-      //         page: window.gallery.page,
-      //         winningBidCpm: vidazooNetValue,
-      //         isVideo: true,
-      //     });
-      //     window.tracking.trackDebugPageValue(
-      //         {
-      //             bidder: 'vidazoo_vid',
-      //             cpm: vidazooNetValue,
-      //         },
-      //         {
-      //             winningBidCpm: vidazooNetValue,
-      //             page: window.gallery.page,
-      //         }
-      //     );
-      // }
+      tracking.trackPageValue(vidazooNetValue / 1000, slot.onoParams.page, null, true);
     };
   }, []);
 

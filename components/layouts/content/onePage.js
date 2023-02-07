@@ -114,9 +114,9 @@ const ItemSection = ({ item, index, onInViewChange }) => {
     <>
       <div className="item-section" ref={ref}>
         {parse(contentPart1)}
-        {canShowFirstAd && <Ad adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>}
+        {canShowFirstAd && <Ad page={index} adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>}
         {parse(contentPart2)}
-        {canShowSecondAd && <Ad adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>}
+        {canShowSecondAd && <Ad page={index} adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>}
       </div>
     </>
   );

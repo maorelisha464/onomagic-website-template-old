@@ -34,7 +34,7 @@ class Tracking {
 
   trackPageValue = (value, page, isWinnigBid, videoValue) => {
     const { utm_source, utm_campaign, utm_term, article_id } = userParams;
-    console.log(`******* trackPageValue: page-${page}, value-${value}, type-${type} *******`);
+    console.log(`******* trackPageValue: page-${page}, value-${value}, type-${videoValue ? "videoValue" : "displayValue"} *******`);
     const data = {
       utm_source,
       utm_campaign,
@@ -57,7 +57,7 @@ class Tracking {
     if (typeof document === "undefined") return;
     const img = new Image();
     const dataStr = Object.entries(data)
-      .filter(([key, val]) => val)
+      .filter(([key, val]) => typeof val !== "undefined" && val !== null)
       .map(([key, val]) => `${key}=${val}`)
       .join("&");
     img.src = `//vv.pupabc.com/prepixel?event=${eventName}&${dataStr}&cb=${this.cacheBusting()}`;
