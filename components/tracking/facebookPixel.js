@@ -1,8 +1,7 @@
 import Script from "next/script";
 import { useEffect } from "react";
 import userParams from "../common/userParams";
-/// TODO external id
-/// TODO think of where to store pixels env?
+import { cookies } from "../common/store";
 
 const FacebookPixel = () => {
   const { utm_source } = userParams();
@@ -12,10 +11,11 @@ const FacebookPixel = () => {
   if (!shouldRun) return null;
 
   useEffect(() => {
-    if (typeof window === "undefined" || !window.fbq) return;
-    window.fbq("init", 500765417046434);
-    window.fbq("init", 1118320162091869);
-    window.fbq("init", 469637394515950);
+    if (typeof window === 'undefined' || !window.fbq) return;
+    const externalId = cookies.externalId();
+    window.fbq("init", 500765417046434, { external_id: externalId });
+    window.fbq("init", 1118320162091869, { external_id: externalId });
+    window.fbq("init", 469637394515950, { external_id: externalId });
   }, []);
 
   return (
@@ -23,7 +23,7 @@ const FacebookPixel = () => {
       <Script id="facebook-pixel" strategy="afterInteractive">
         {` (function (f, b, e, v, n, t, s) {
             if (f.fbq) return;
-            n = f.fbq = function () {
+            n = f.fbq = function () { 
             n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
             };
             if (!f._fbq) f._fbq = n;
