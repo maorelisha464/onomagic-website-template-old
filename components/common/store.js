@@ -33,7 +33,7 @@ const cookies = {
   set: (key, value, hoursTtl) => {
     if (typeof document === "undefined") return;
     let date = new Date();
-    const ttl = hoursTtl ? hoursTtl * 60 * 60 * 1000: 30 * 60 * 1000;
+    const ttl = hoursTtl ? hoursTtl * 60 * 60 * 1000 : 30 * 60 * 1000;
     date.setTime(date.getTime() + ttl);
     let expires = "; expires=" + date.toGMTString();
     document.cookie = key + "=" + value + expires + "; path=/";

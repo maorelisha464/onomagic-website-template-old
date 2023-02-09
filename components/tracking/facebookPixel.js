@@ -1,21 +1,21 @@
 import Script from "next/script";
 import { useEffect } from "react";
-import userParams from "../common/userParams";
+import { userParams } from "../common/userParams";
 import { cookies } from "../common/store";
 
+export const facebookPixelIds = [500765417046434, 1118320162091869, 469637394515950];
+
 const FacebookPixel = () => {
-  const { utm_source } = userParams();
+  const { utm_source } = userParams;
   const validUtmSource = ["facebook", "facebook-bc"];
   const shouldRun = validUtmSource.includes(utm_source);
 
   if (!shouldRun) return null;
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.fbq) return;
+    if (typeof window === "undefined" || !window.fbq) return;
     const externalId = cookies.externalId();
-    window.fbq("init", 500765417046434, { external_id: externalId });
-    window.fbq("init", 1118320162091869, { external_id: externalId });
-    window.fbq("init", 469637394515950, { external_id: externalId });
+    facebookPixelIds.forEach((id) => window.fbq("init", id, { external_id: externalId }));
   }, []);
 
   return (

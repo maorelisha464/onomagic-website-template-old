@@ -21,7 +21,7 @@ export default function useUserParams(uaStr) {
   const UA = useUserAgent(uaStr ? uaStr : null);
   const router = useRouter();
   const {
-    query: { utm_campaign, utm_source, utm_term },
+    query: { utm_campaign, utm_source, utm_term, fbclid },
   } = router;
 
   useEffect(() => {
@@ -43,6 +43,7 @@ export default function useUserParams(uaStr) {
     utm_campaign: calcUtmCampaign,
     utm_source: calcUtmSource,
     utm_term: calcUtmTerm,
+    fbclid,
     country: cookies.get("CF-COUNTRY") || "unknown",
     browser: UA.browser || "unknown",
     device: isMobile ? "mobile" : UA.isDesktop ? "desktop" : "tablet",
@@ -57,5 +58,6 @@ export default function useUserParams(uaStr) {
     sessionId: cookies.getOno("sessionId"),
     firstVisitTime: cookies.getOno("firstVisitTime"),
     article_id: null,
+    external_id: cookies.externalId(),
   };
 }
