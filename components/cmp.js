@@ -8,7 +8,7 @@ const QC_ID = "4384sJsMMMffm";
 export default function CMP() {
   const quantCastCode = () => {
     return `
-        var host = '${HOST}';
+        var host = '${process.env.NEXT_PUBLIC_HOST}';
         var element = document.createElement('script');
         var firstScript = document.getElementsByTagName('script')[0];
         var url = 'https://cmp.quantcast.com'
@@ -170,6 +170,7 @@ export default function CMP() {
   return (
     <>
       <Script
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: quantCastCode(),
         }}

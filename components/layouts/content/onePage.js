@@ -4,18 +4,21 @@ import Ad from "../../ads/ad";
 import advertising from "../../ads/advertising";
 import { useInView } from "react-intersection-observer";
 import { changeUrl } from "../../common/utils";
-import useUserParams from "../../common/userParams";
+import { userParams } from "../../common/userParams";
 import { Container, Title, Text } from "@mantine/core";
+import tracking from "../../tracking/tracking";
+
 export default function OnePage({ data }) {
-  // const { isMobile } = useUserParams();
   const [openToPage, setOpenToPage] = useState(5);
   const [firstInView, setFirstInView] = useState(0);
   const [pagesInView, setPagesInView] = useState({});
-  const firstRunFirstInView = useRef(true);
-  const firstRunOpenToPage = useRef(true);
-  const firstRunPagesInView = useRef(true);
   const { ref: endOfContentRef, inView: openMore } = useInView({
     rootMargin: "500px",
+  });
+  const firstRun = useRef({
+    firstInView: true,
+    openToPage: true,
+    pagesInView: true,
   });
 
   const onItemInViewChange = useCallback(
@@ -30,13 +33,16 @@ export default function OnePage({ data }) {
   );
 
   useEffect(() => {
-    if (firstRunFirstInView.current) {
-      firstRunFirstInView.current = false;
+    if (firstRun.current.firstInView) {
+      firstRun.current.firstInView = false;
       return;
     }
+    console.log("firstInView", firstInView);
     changeUrl(firstInView);
     const val = pagesInView[firstInView];
     if (val && !val.tracked) {
+      //track pageView
+      tracking.trackPageView(firstInView);
       const sectionObj = pagesInView[firstInView];
       sectionObj.tracked = true;
       setPagesInView({ ...pagesInView, [firstInView]: sectionObj });
@@ -44,11 +50,11 @@ export default function OnePage({ data }) {
   }, [firstInView]);
 
   useEffect(() => {
-    if (firstRunPagesInView.current) {
-      firstRunPagesInView.current = false;
+    if (firstRun.current.pagesInView) {
+      firstRun.current.pagesInView = false;
       return;
     }
-    const firstPageInView = Object.entries(pagesInView).find(([key, val]) => val.inView);
+    const firstPageInView = Object.entries(pagesInView).find(([page, val]) => val.inView);
     const [page, val] = firstPageInView || [];
     if (page && page !== firstInView) {
       setFirstInView(page);
@@ -64,8 +70,8 @@ export default function OnePage({ data }) {
   }, [openMore]);
 
   useEffect(() => {
-    if (firstRunOpenToPage.current) {
-      firstRunOpenToPage.current = false;
+    if (firstRun.current.openToPage) {
+      firstRun.current.openToPage = false;
       return;
     }
     advertising.runAuction();
@@ -84,7 +90,7 @@ export default function OnePage({ data }) {
 }
 
 const ItemSection = ({ item, index, onInViewChange }) => {
-  const { isMobile } = useUserParams();
+  const { isMobile } = userParams;
   const { ref, inView } = useInView({
     /* Optional options */
     threshold: 0,
@@ -93,6 +99,8 @@ const ItemSection = ({ item, index, onInViewChange }) => {
 
   const contentPart1 = item.split("<img")[0];
   const contentPart2 = "<img" + item.split("<img")[1];
+  const canShowFirstAd = index !== 0;
+  const canShowSecondAd = index !== 0 && index !== 1;
 
   useEffect(() => {
     if (!didMount.current) {
@@ -106,9 +114,9 @@ const ItemSection = ({ item, index, onInViewChange }) => {
     <>
       <div className="item-section" ref={ref}>
         {parse(contentPart1)}
-        <Ad adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>
+        {canShowFirstAd && <Ad page={index} adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>}
         {parse(contentPart2)}
-        <Ad adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>
+        {canShowSecondAd && <Ad page={index} adId={isMobile ? "maor2" : "maor"} width={isMobile ? "300" : "728"} height={isMobile ? "270" : "110"}></Ad>}
       </div>
     </>
   );

@@ -5,7 +5,7 @@ import Ad from "../ads/ad";
 import advertising from "../ads/advertising";
 import OnePage from "./content/onePage";
 import Gallery from "./content/gallery";
-import useUserParams from "../common/userParams";
+import { userParams } from "../common/userParams";
 
 const SideElement = styled.div`
   // padding: 30px;
@@ -15,7 +15,7 @@ const SideElement = styled.div`
 
 export default function SlugLayout({ data, pageNumber }) {
   const [progress, setProgress] = useState(0);
-  const { utm_source } = useUserParams();
+  const { utm_source } = userParams;
   const onePageChannels = ["facebook", "twitter", "tiktok"];
   const layoutTypeGallery = !onePageChannels.includes(utm_source);
   const contentProps = { data, pageNumber: pageNumber || 0 };
@@ -23,8 +23,11 @@ export default function SlugLayout({ data, pageNumber }) {
   const Content = content && content.layout;
 
   useEffect(() => {
+    if (content) advertising.runAuction();
+  }, [content]);
+
+  useEffect(() => {
     setContent({ layout: layoutTypeGallery ? Gallery : OnePage });
-    advertising.runAuction();
   }, []);
 
   return (

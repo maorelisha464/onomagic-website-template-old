@@ -2,9 +2,13 @@ import "../styles/global.css";
 import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
 import AdsLibScripts from "../components/ads/adsLibScripts";
+import useUserParams, { userParams } from "../components/common/userParams";
 
 export default function App(props) {
   const { Component, pageProps } = props;
+  const appUserParams = useUserParams();
+  Object.assign(userParams, appUserParams);
+
   return (
     <>
       <Head>

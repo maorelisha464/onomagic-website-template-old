@@ -1,6 +1,5 @@
 import React from "react";
 import { cookies } from "../common/store";
-// import { staticUserParams } from '../common/userParams';
 import { withGPTQueue, withPrebidQueue } from "./adsQueue";
 import { bidAdjustments, buildPrebidConfig, prebidEventsListeners, gptEventsListeners } from "./advertisingHelpers";
 import amazonBidsMap from "./amazonBidsMap";
@@ -19,6 +18,7 @@ class Advertising {
       newBids: [],
       allBids: [],
       totalCpm: cookies.getOno("totalCpm") || 0,
+      pagesRpms: cookies.getOno("pagesRpms") || {},
     };
     this.advertisingState = advertisingState;
     this.initFinished = false;
@@ -114,9 +114,10 @@ class Advertising {
     window.pbjs.que = window.pbjs.que || [];
   };
 
-  defineSlot = ({ id, sizes, dfpPath }) => {
+  defineSlot = ({ id, sizes, dfpPath, page }) => {
     const googletag = window.googletag;
     const slot = googletag.defineSlot(dfpPath, sizes, id).addService(googletag.pubads());
+    slot.onoParams = { page, bids: [] };
     googletag.enableServices();
     googletag.display(id);
     return slot;
@@ -243,7 +244,7 @@ class Advertising {
     this.initFinished = true;
   };
 
-  setBids = (amazonBids, prebidBids, slots) => {
+  setOnoParamsOnSlot = (amazonBids, prebidBids, slots) => {
     const obj = {};
     for (const bid of amazonBids) {
       if (bid.amzniid && amazonBidsMap[bid.amznbid]) {
@@ -277,7 +278,7 @@ class Advertising {
 
     slots.forEach((slot) => {
       const slotID = slot.getSlotElementId();
-      slot.bids = obj[slotID] || [];
+      slot.onoParams.bids = obj[slotID] || [];
     });
   };
 
@@ -296,13 +297,13 @@ class Advertising {
       //define slots
       const adUnit = this.advertisingState.selfRefreshAdUnits.find((adUnit) => adUnit.id === unitID);
       slots = unitID ? [this.defineSlot(adUnit)] : this.advertisingState.newAdUnits.map(this.defineSlot);
-      this.setBids(amazonBids, prebidBids, slots);
+      this.setOnoParamsOnSlot(amazonBids, prebidBids, slots);
       if (amazonBids?.length) apstag.setDisplayBids();
       if (prebidBids) await withPrebidQueue(() => pbjs.setTargetingForGPTAsync());
     });
     if (slots.length) googletag.pubads().refresh(slots);
     this.stateAfterAuction(slots, unitID);
-    console.log("************************* auction finished ***************************");
+    // console.log("************************* auction finished ***************************");
     window.firstAuctionFinished = true;
   };
 
@@ -346,14 +347,3 @@ const advertising = new Advertising();
 })();
 
 export default advertising;
-
-/// Memory leak
-// window.addEventHook = window.addEventListener;
-// window.addEventListener = function () {
-//     if (!window.listenerHook)
-//         window.listenerHook = [];
-
-//     window.listenerHook.push({name: arguments[0], callback: arguments[1] });
-//     window.addEventHook.apply(window,arguments);
-// };
-// https://stackoverflow.com/questions/47486358/google-dfp-in-spa-angular-vue-how-to-destroy-ad-and-all-its-references-to
