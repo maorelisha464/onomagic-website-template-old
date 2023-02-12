@@ -64,6 +64,7 @@ const ContentContainer = styled(Container)`
 
 const ContentWrapper = styled.div`
   max-width: 100%;
+  min-width: 0;
 `;
 
 const Sidebar = styled.div`

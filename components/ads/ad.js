@@ -29,6 +29,7 @@ const AdWrapper = styled.div`
   margin: 30px auto;
   text-align: center;
   width: ${(props) => (props.width ? `${props.width}px` : "300px")};
+  max-width: 100%;
   height: ${(props) => (props.height ? `${props.height}px` : "250px")};
 `;
 let adsCounter = 0;
